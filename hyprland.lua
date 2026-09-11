@@ -92,8 +92,11 @@ hl.config({
       ignore_opacity = true,
       special = true,
       -- Menus and tooltips of translucent apps (GTK popovers, context menus).
+      -- Only pixels denser than 0.5 are frosted: the menu body (0.88 in
+      -- gtk.css) is, its drop shadow (kept at or below 0.35) is not. At 0.2
+      -- the shadow itself was blurred and darkened into a band around menus.
       popups = true,
-      popups_ignorealpha = 0.2,
+      popups_ignorealpha = 0.5,
     },
   },
 })

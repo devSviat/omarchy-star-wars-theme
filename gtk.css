@@ -91,13 +91,18 @@
 }
 
 /*
- * Popovers and menus: a hairline border and a deep shadow so a menu lifts off
- * translucent chrome instead of blending into it.
+ * Popovers and menus: a hairline border and a short, light shadow so a menu
+ * lifts off translucent chrome instead of blending into it.
+ *
+ * The shadow stays at or below 35% on purpose. Hyprland frosts a popup
+ * wherever its pixels are denser than decoration.blur.popups_ignorealpha
+ * (0.5 in hyprland.lua); a heavier shadow (it was 70% over 22 px) got frosted
+ * and darkened too, and read as a dirty blurred band around every menu.
  */
 popover > contents {
   background-color: rgba(9, 10, 16, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
 popover > arrow {
