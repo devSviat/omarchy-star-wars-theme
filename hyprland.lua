@@ -163,49 +163,72 @@ hl.layer_rule({
   ignore_alpha = 0.55,
 })
 
--- Real liquid glass, optional. The hyprglass compositor plugin
+-- Two themes live in this one directory: `star-wars` and `star-wars-glass` are
+-- both symlinks to it, so every file is shared and they can never drift. The
+-- only difference is hyprglass, switched on the active theme's name, which
+-- omarchy-theme-set writes before its final `hyprctl reload`.
+local function current_theme_name()
+  local file = io.open((os.getenv("HOME") or "") .. "/.local/state/omarchy/current/theme.name", "r")
+  if not file then
+    return ""
+  end
+  local name = file:read("*l") or ""
+  file:close()
+  return name
+end
+
+local glass_theme = current_theme_name() == "star-wars-glass"
+
+-- Real liquid glass, Star Wars Glass only. The hyprglass compositor plugin
 -- (https://github.com/hyprnux/hyprglass) adds what Hyprland's own blur cannot:
--- edge refraction, chromatic aberration and a specular sheen. It is not part of
--- this theme and nothing here loads it; this block only configures it when it
--- is already loaded, so without the plugin the theme is unchanged. Adapted from
--- the Velora Liquid Glass theme, which found the built-in presets reliable
--- where hand-tuned parameters showed no visible effect.
+-- edge refraction, chromatic aberration and a specular sheen. It is not part
+-- of the theme and nothing here loads it; this block only configures it when
+-- it is already loaded. In plain Star Wars a loaded plugin is switched off, so
+-- that theme really is Hyprland's blur alone.
 if hl.plugin and hl.plugin.hyprglass then
   local hg = hl.plugin.hyprglass
 
-  -- A softer glass than the built-in "glass" preset, whose refraction (8.0),
-  -- chromatic aberration (0.5) and lens distortion (0.3) bend the wallpaper
-  -- hard at every corner and fringe it in colour. "saber" keeps the look —
-  -- a lensed edge and a specular sheen — at a fraction of the bend, with a
-  -- thinner bezel, so corners read as rounded glass rather than a fisheye.
-  hg.preset("saber", {
-    inherits = "glass",
-    refraction_strength = 3.0,
-    chromatic_aberration = 0.15,
-    lens_distortion = 0.12,
-    edge_thickness = 0.035,
-    fresnel_strength = 0.3,
-    specular_strength = 0.5,
-  })
+  if not glass_theme then
+    hg.config({ enabled = false, layers = { enabled = false } })
+  else
 
-  hg.config({
-    enabled = true,
-    default_theme = "dark",
-    default_preset = "saber",
-    -- live_resample re-renders a layer's glass whenever anything behind it
-    -- changes, and the bar sits over a clock that ticks every second, so it
-    -- kept the compositor busy at idle. The bar is over the wallpaper and
-    -- menus and panels are short-lived, so a static backdrop is invisible.
-    layers = { enabled = true, live_resample = false },
-  })
+    -- A softer glass than the built-in "glass" preset, whose refraction (8.0),
+    -- chromatic aberration (0.5) and lens distortion (0.3) bend the wallpaper
+    -- hard at every corner and fringe it in colour. "saber" keeps the look —
+    -- a lensed edge and a specular sheen — at a fraction of the bend, with a
+    -- thinner bezel, so corners read as rounded glass rather than a fisheye.
+    hg.preset("saber", {
+      inherits = "glass",
+      refraction_strength = 3.0,
+      chromatic_aberration = 0.15,
+      lens_distortion = 0.12,
+      edge_thickness = 0.035,
+      fresnel_strength = 0.3,
+      specular_strength = 0.5,
+    })
 
-  -- Hyprland's cached blur is captured before hyprglass draws, which hides the
-  -- glass on any window that is not being moved; hyprglass needs it off.
-  hl.config({ decoration = { blur = { new_optimizations = false } } })
+    hg.config({
+      enabled = true,
+      default_theme = "dark",
+      default_preset = "saber",
+      -- live_resample re-renders a layer's glass whenever anything behind it
+      -- changes, and the bar sits over a clock that ticks every second, so it
+      -- kept the compositor busy at idle. The bar is over the wallpaper and
+      -- menus and panels are short-lived, so a static backdrop is invisible.
+      layers = { enabled = true, live_resample = false },
+    })
 
-  hg.layer("omarchy-bar", { preset = "saber" })
-  -- Full-screen scrim + card layers take the same 0.55 alpha gate as the blur
-  -- rule above, so only the card refracts and the scrim stays a plain wash.
-  hg.layer("omarchy-menu", { preset = "saber", mask_threshold = 0.55 })
-  hg.layer("omarchy-keyboard-panel", { preset = "saber", mask_threshold = 0.55 })
+    -- No need to turn Hyprland's blur.new_optimizations off (Velora does): per
+    -- the hyprglass README, manage_window_blur and layers.manage_blur (both on
+    -- by default) set noblur on every glassed window and layer, so the cached
+    -- blur never hides the glass, and everything else keeps the cheaper cache.
+    -- On glassed layers the layer rule's ignore_alpha no longer applies —
+    -- mask_threshold below does that job.
+
+    hg.layer("omarchy-bar", { preset = "saber" })
+    -- Full-screen scrim + card layers take the same 0.55 alpha gate as the blur
+    -- rule above, so only the card refracts and the scrim stays a plain wash.
+    hg.layer("omarchy-menu", { preset = "saber", mask_threshold = 0.55 })
+    hg.layer("omarchy-keyboard-panel", { preset = "saber", mask_threshold = 0.55 })
+  end
 end

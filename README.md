@@ -7,12 +7,32 @@ notifications over a Hyprland blur.
 
 ![preview](preview.png)
 
+## Two themes: Star Wars and Star Wars Glass
+
+This one directory is two Omarchy themes, kept in parallel:
+
+| Theme | Slug | Glass |
+|---|---|---|
+| **Star Wars** | `star-wars` | Hyprland's own blur only; if hyprglass is loaded, the theme switches it off |
+| **Star Wars Glass** | `star-wars-glass` | the same theme plus hyprglass liquid glass (`saber` preset) |
+
+Both slugs are symlinks to the same directory, so every file — palette,
+borders, bar, terminals, wallpapers — is shared and the two cannot drift. The
+only difference is decided at load time in `hyprland.lua`, from the active
+theme's name in `~/.local/state/omarchy/current/theme.name`. Change something
+once and both themes have it.
+
 ## Install
 
 ```bash
 ln -sfn "$PWD" ~/.config/omarchy/themes/star-wars
-omarchy theme set star-wars
+ln -sfn "$PWD" ~/.config/omarchy/themes/star-wars-glass
+omarchy theme set star-wars          # or: omarchy theme set star-wars-glass
 ```
+
+Star Wars Glass needs the hyprglass plugin loaded — see
+[Liquid glass](#liquid-glass-optional-hyprglass) below. Without it, Star Wars
+Glass looks exactly like Star Wars.
 
 Use a symlink, not `omarchy theme install`. A theme cloned from a repo is
 filtered: Omarchy drops every `*.lua` and the terminal configs from it, and
@@ -132,7 +152,15 @@ hyprctl plugin load ~/.local/share/hyprglass/src/hyprglass.so
 hyprctl reload        # so the theme's hyprglass block runs
 ```
 
-That loads it for the current session only. Rebuild after every Hyprland
+That loads it for the current session only. To load it at every login, run
+the same two commands on start, e.g. in `~/.config/hypr/autostart.lua`:
+
+```lua
+o.exec_on_start([[f="$HOME/.local/share/hyprglass/src/hyprglass.so"; [ -f "$f" ] && hyprctl plugin load "$f" | grep -qx ok && hyprctl reload]])
+```
+
+The theme leaves `blur.new_optimizations` on: hyprglass sets `noblur` on the
+windows and layers it glasses, so the cached blur never hides the glass. Rebuild after every Hyprland
 update; a mismatched build refuses to load. To unload:
 `hyprctl plugin unload ~/.local/share/hyprglass/src/hyprglass.so`.
 

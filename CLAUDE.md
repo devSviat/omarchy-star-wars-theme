@@ -9,7 +9,38 @@ Derived from `~/Projects/omarchy-devsviat-theme` (slug `dev-sviat`); that
 repo's `docs/RESEARCH.md` is the full account of how Omarchy 4 theming works
 and is not duplicated here.
 
-The slug is `star-wars`, which Omarchy displays as **Star Wars**.
+## Two themes, maintained in parallel
+
+This directory is **two** Omarchy themes: `star-wars` (**Star Wars**, no
+hyprglass) and `star-wars-glass` (**Star Wars Glass**, with hyprglass). Both
+are symlinks to this one repo:
+
+```bash
+ln -sfn /home/sviat/Projects/omarchy-star-wars-theme ~/.config/omarchy/themes/star-wars
+ln -sfn /home/sviat/Projects/omarchy-star-wars-theme ~/.config/omarchy/themes/star-wars-glass
+```
+
+Rules for keeping them in parallel:
+
+- **Never split the files into two copies.** Every change goes into this one
+  directory and lands in both themes.
+- **The only difference is hyprglass**, chosen in `hyprland.lua` by reading
+  `~/.local/state/omarchy/current/theme.name`. `omarchy-theme-set` writes that
+  file right after swapping the theme in and before its final `hyprctl reload`
+  (`omarchy-restart-hyprctl`), so the name is always current.
+- In `star-wars` a loaded hyprglass is set `enabled = false` and
+  `layers.enabled = false` — the plugin stays loaded (autostart) but draws
+  nothing, so the theme really is Hyprland's blur alone.
+- Anything else that should differ between the two must be keyed the same way
+  (on the theme name at load time), not by forking a file.
+- After a change, apply and check **both**: `omarchy theme set star-wars`, then
+  `omarchy theme set star-wars-glass`, `hyprctl configerrors` each time.
+- Both slugs have a wallpaper pin (`~/.local/state/omarchy/pinned-background/`),
+  since the shared `backgrounds/` paths would otherwise make a switch advance
+  the rotation.
+
+`preview.png` is shared, so the theme switcher shows the same thumbnail for
+both.
 
 ## Installed as a symlink, deliberately
 
@@ -69,9 +100,11 @@ When measuring the bar against a window, wait a few seconds after
 unless the plugin is loaded. The prebuilt `hyprglass.so` release links
 `libaquamarine.so.13`, this machine has `.so.14`, so it is built locally in
 `~/.local/share/hyprglass/src` (plain `make`, no hyprpm — hyprpm needs sudo and
-cmake/meson). Loaded per session with `hyprctl plugin load`, then
-`hyprctl reload` so the block runs; not autoloaded. The block turns
-`blur.new_optimizations` off, which hyprglass needs. Rebuild after each
+cmake/meson). Autoloaded from `~/.config/hypr/autostart.lua`
+(machine config): `hyprctl plugin load`, then `hyprctl reload` so the block
+runs; a failed load sends a notification to rebuild. The block leaves
+`blur.new_optimizations` on: hyprglass's `manage_window_blur` / `layers.manage_blur`
+already set noblur on glassed surfaces (Velora's advice to turn it off is outdated). Rebuild after each
 Hyprland update. The theme defines its own preset, `saber` (inherits
 `glass`, refraction 3.0 instead of 8.0, aberration 0.15, lens 0.12, bezel
 0.035) — the stock `glass` bent the corners into a fisheye. Measured cost with
