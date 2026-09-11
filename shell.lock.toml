@@ -1,0 +1,13 @@
+# Full [lock] section. The lock screen always blurs the current wallpaper
+# itself; this styles only the password field on top of it.
+background       = "#0d0e15"
+background-alpha = 0.55
+text             = "#dcd6e6"
+placeholder      = "#9690ab"
+text-error       = "#e5484d"
+border           = "hyprland.active-border"
+border-active    = "hyprland.active-border"
+border-error     = "#e5484d"
+border-alpha     = 0.85
+selection        = "#7fa6d8"
+selection-alpha  = 0.45

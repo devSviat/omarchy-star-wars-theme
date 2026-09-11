@@ -1,0 +1,62 @@
+# Star Wars — Omarchy 4 theme drawn from the Sith lightsaber wallpaper
+# (backgrounds/00-sith-star-wars-lightsaber-...): deep navy-black smoke, one
+# red blade, one violet blade, all of it standing in steel-blue smoke. The
+# accent is that smoke lit up, and the window border runs from its light to
+# its shadow.
+#
+# The other hues are pulled from the rest of the rotation: green from the
+# stormtrooper's smoke, orange and gold from the Mandalorian's sparks, blue
+# from a Jedi blade.
+#
+# Comments stay on their own lines. omacalc reads the active colors.toml with
+# a parser that takes the rest of the line as the value, so an inline comment
+# leaves it without a palette and it draws an empty black window.
+
+mode = "dark"
+
+# accent    <- the steel-blue smoke (#626f90), lifted to read as text
+# selection <- the smoke's mid tone (#283646), a step up
+# muted     <- the grey-violet of the smoke
+accent    = "#7fa6d8"
+selection = "#26354f"
+muted     = "#5e5a74"
+
+# The smoke field of the main wallpaper sits at #11121b. Omarchy's surfaces
+# go one step either side of it, and window transparency lets the real
+# wallpaper through on top of that.
+background         = "#0d0e15"
+dark_background    = "#090a10"
+darker_background  = "#050609"
+lighter_background = "#1b1c2b"
+
+# foreground <- the pale lavender rim light on the cloak
+foreground        = "#dcd6e6"
+dark_foreground   = "#9690ab"
+light_foreground  = "#ece8f4"
+bright_foreground = "#ffffff"
+
+# A glass rim, after the Velora Liquid Glass theme, in this theme's own light:
+# pale steel (#cfe0f7, 40%) catching the top edge, settling into the accent
+# (#7fa6d8, 18%) at the bottom (90 degrees = top to bottom). Inactive windows
+# keep only the smoke's mid tone (#26354f, 50%), a soft navy edge that sits in
+# the same glass as the bar and the windows. The shell's [hyprland] tokens
+# take this too, so menus, panels and notifications wear the same rim. Kept in
+# step by hand with hyprland.lua, which is written out rather than generated.
+hyprland_active_border   = "rgba(cfe0f766) rgba(7fa6d82e) 90deg"
+hyprland_inactive_border = "rgba(26354f80)"
+
+red     = "#e5484d"
+yellow  = "#f0c05a"
+orange  = "#ff7a3d"
+green   = "#3ddc97"
+cyan    = "#4fd1e8"
+blue    = "#4d9bff"
+magenta = "#9b5cff"
+brown   = "#8a5a44"
+
+bright_red     = "#ff6b72"
+bright_yellow  = "#ffd98a"
+bright_green   = "#74efb8"
+bright_cyan    = "#84e4f3"
+bright_blue    = "#7fb8ff"
+bright_magenta = "#b98cff"

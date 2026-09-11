@@ -1,0 +1,16 @@
+# Full [launcher] section. The scrim is a faint 0.1 and is not blurred
+# (hyprland.lua ignore_alpha 0.55), so the desktop stays visible around the
+# card; only the card itself is frosted glass.
+background                = "#0d0e15"
+background-alpha          = 0.62
+text                      = "#dcd6e6"
+border                    = "hyprland.active-border-foreground"
+border-alpha              = 0.85
+scrim                     = "#050609"
+scrim-alpha               = 0.1
+# The selected row is lit in the accent.
+selected-background       = "#7fa6d8"
+selected-background-alpha = 0.2
+selected-text             = "#ffffff"
+selected-border           = "hyprland.active-border-foreground"
+selected-border-alpha     = 0.35
