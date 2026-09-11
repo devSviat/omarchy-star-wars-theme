@@ -4,9 +4,9 @@
 # accent is that smoke lit up, and the window border runs from its light to
 # its shadow.
 #
-# The other hues are pulled from the rest of the rotation: green from the
-# stormtrooper's smoke, orange and gold from the Mandalorian's sparks, blue
-# from a Jedi blade.
+# The other hues fill in around the blades: a console-screen green for git
+# diff and btop, orange and gold for blaster fire and sparks, blue for a Jedi
+# blade.
 #
 # Comments stay on their own lines. omacalc reads the active colors.toml with
 # a parser that takes the rest of the line as the value, so an inline comment
