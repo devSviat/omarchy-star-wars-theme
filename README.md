@@ -11,6 +11,16 @@ notifications over a Hyprland blur.
 > Screenshots aren't included for the same reason — they would show that
 > artwork — but `tools/capture-previews.sh` makes them on your own desktop.
 
+**Quick start** (details in [Install](#install)):
+
+```bash
+git clone https://github.com/devSviat/omarchy-star-wars-theme.git ~/Projects/omarchy-star-wars-theme
+cd ~/Projects/omarchy-star-wars-theme
+./tools/get-wallpapers.sh      # the wallpapers, checked against pinned SHA-256s
+./tools/install-themes.sh      # adds Star Wars and Star Wars Glass to Omarchy
+omarchy theme set star-wars
+```
+
 ## Two themes: Star Wars and Star Wars Glass
 
 This one directory is two Omarchy themes, kept in parallel:
@@ -34,14 +44,16 @@ local-only); until then the switcher shows the first wallpaper.
 
 ## Install
 
-Needs Omarchy 4 (Hyprland with the Lua config and the Quickshell bar). Star
-Wars Glass additionally needs the hyprglass plugin, set up in step 4.
+Needs Omarchy 4 (Hyprland with the Lua config and the Quickshell bar); tested
+on Omarchy 4.0.3 with Hyprland 0.56.2. `get-wallpapers.sh` also needs `curl`
+and ImageMagick, both part of a standard Omarchy install. Star Wars Glass
+additionally needs the hyprglass plugin, built in step 5.
 
 1. **Get the repo** somewhere permanent — both themes point into it, so don't
    move or delete it afterwards:
 
    ```bash
-   git clone <this repo> ~/Projects/omarchy-star-wars-theme
+   git clone https://github.com/devSviat/omarchy-star-wars-theme.git ~/Projects/omarchy-star-wars-theme
    cd ~/Projects/omarchy-star-wars-theme
    ```
 
@@ -91,16 +103,20 @@ Wars Glass additionally needs the hyprglass plugin, set up in step 4.
      nautilus -q    # then reopen Files
      ```
 
-   - *Boot splash and login screen* (the Ahsoka orrery): Omarchy Menu → Style
-     → Unlock → Star Wars, or `omarchy-plymouth-set-by-theme star-wars`
-     (asks for sudo, rebuilds the initramfs).
+   - *Boot splash and login screen* (the Ahsoka orrery, built in step 2):
+     Omarchy Menu → Style → Unlock → Star Wars, or
+     `omarchy-plymouth-set-by-theme star-wars` (asks for sudo, rebuilds the
+     initramfs).
 
    - *The bar* works with its background on or off — double-click the bar to
      switch. The theme's bar tint shows only with the background on.
 
    - *Theme-switcher thumbnails*: switch a monitor to an empty workspace and
      run `PREVIEW_WORKSPACE=<n> ./tools/capture-previews.sh`. It applies each
-     theme in turn, screenshots it and puts your theme back.
+     theme in turn, screenshots it (with `grim`, `foot`, `fastfetch` and
+     `nvim`, all shipped with Omarchy) and puts your theme back. Star Wars
+     Glass picks its thumbnail up on its own; until then its `preview.png`
+     link points at a file that doesn't exist yet, which the switcher ignores.
 
 ### Why not `omarchy theme install`
 
@@ -122,8 +138,9 @@ omarchy theme set star-wars-glass   # or star-wars — re-apply to stage the cha
 ```
 
 After an Omarchy update that bumps Hyprland, rebuild hyprglass (see
-[Liquid glass](#liquid-glass-optional-hyprglass)); until then Star Wars Glass
-falls back to the plain look and a notification says so.
+[Liquid glass](#liquid-glass-optional-hyprglass)). Until then the old build
+refuses to load and Star Wars Glass falls back to the plain look; the login
+snippet below sends a notification when that happens.
 
 ### Uninstall
 
@@ -133,6 +150,10 @@ Switch to another theme first, then:
 rm ~/.config/omarchy/themes/star-wars
 rm -r ~/.config/omarchy/themes/star-wars-glass   # only links, the repo is untouched
 ```
+
+If you set up the extras, also remove the hyprglass block from
+`~/.config/hypr/autostart.lua`, `~/.local/share/hyprglass/`, and the
+`~/.config/gtk-4.0/gtk.css` link. Then delete the repo itself.
 
 ## Palette
 
@@ -145,8 +166,8 @@ rm -r ~/.config/omarchy/themes/star-wars-glass   # only links, the repo is untou
 | `accent` | `#7fa6d8` | the steel-blue smoke (`#626f90`), lifted |
 | `selection` | `#26354f` | the smoke's mid tone (`#283646`), a step up |
 | active border | pale steel `#cfe0f7` 40% -> accent `#7fa6d8` 18%, 90°; inactive smoke navy `#26354f` 50%; shell rims at 85% | a glass rim lit from above, after [Velora Liquid Glass](https://github.com/shoxjaxon-atabayev/omarchy-velora-liquid-glass) |
-| `green` | `#3ddc97` | the stormtrooper's smoke |
-| `orange` / `yellow` | `#ff7a3d` / `#f0c05a` | the Mandalorian's sparks |
+| `green` | `#3ddc97` | a console-screen green, for `git diff` and btop |
+| `orange` / `yellow` | `#ff7a3d` / `#f0c05a` | blaster fire and sparks |
 | `blue` | `#4d9bff` | a Jedi blade |
 | `magenta` | `#9b5cff` | the violet blade, a purer step |
 
@@ -164,17 +185,17 @@ rm -r ~/.config/omarchy/themes/star-wars-glass   # only links, the repo is untou
 | Polkit / tooltip / lock field | `shell.polkit.toml`, `shell.tooltip.toml`, `shell.lock.toml` | 0.85 / 0.9 / 0.55 |
 | GTK apps (Files…) | `gtk.css` | rgba surfaces |
 
-The bar tint only applies while Omarchy's transparent-bar mode is off
-(Omarchy Menu → Style → Bar → Transparency, or `omarchy-bar transparent
-toggle`). With it on, the bar draws no background at all and shows the bare
-top strip of the wallpaper — the darkest part of every image here — so it
-reads near-black next to the frosted windows.
+The bar has two modes, and the theme works with both: double-click the bar,
+or Omarchy Menu → Style → Bar → Transparency. With its background on, the
+bar is glass in the theme's tint. With it off, the bar draws no background
+and sits straight on the wallpaper; the three wallpapers where a blade sat
+under the icons carry a dark scrim for that (see [Backgrounds](#backgrounds)).
 
 Terminals get alpha on the cell background rather than whole-window opacity,
 so the text itself stays fully opaque. Each terminal config also asks for
 blur: foot 1.28 speaks `ext-background-effect-v1`, and without `blur=yes`
-it tells Hyprland not to blur behind it — translucent but sharp. Browsers, video players, games and
-screen-share targets keep Omarchy's opaque rules.
+it tells Hyprland not to blur behind it — translucent but sharp. Browsers,
+video players, games and screen-share targets keep Omarchy's opaque rules.
 
 Blur brightness 0.75 keeps text legible even over the bright
 `nostalgic-room` wallpaper. For more see-through, lower the alpha values
@@ -195,7 +216,7 @@ kylo-ren-star-wars-dark-background-lightsaber-cosplay
 kylo-ren-star-wars-the-rise-of-skywalker-black
 nostalgic-room
 sev-clone-troopers-star-wars-republic-commando
-star-wars-ahsoka-orrery                         (DevSviat's ink, see below)
+star-wars-ahsoka-orrery                         (from the orrery art, see Unlock screen)
 star-wars-maul
 the-mandalorian-season-2-tv-series-2020
 ```
@@ -207,15 +228,14 @@ and The Mandalorian season 2 edit by aggro, per the files' own metadata; the
 characters and the rest are Lucasfilm's. All rights stay with their owners.
 
 Three wallpapers — Kylo Ren with the lightsaber (cosplay), the Sev clone
-trooper and Maul — carry a
-soft dark scrim across the top (`tools/bar-scrim.sh`: black at 72% under the
-bar, fading out by 14% of the height). The rest are untouched. With the bar's own background off — double-click the bar — Omarchy
+trooper and Maul — carry a soft dark scrim across the top
+(`tools/bar-scrim.sh`: black at 72% under the bar, fading out by 14% of the
+height); the rest are untouched. With the bar's own background off, Omarchy
 picks one text colour from the *average* of the strip under it, so a dark
-strip with a lightsaber or a burst of smoke got light text that vanished over
-the bright part. On those three the scrim keeps every pixel under the bar at 6.6:1
-or better against the light bar text, in both bar modes. The script processes
-only the wallpapers listed in it, marks what it processed and skips it on a
-rerun.
+strip with a lightsaber in it got light text that vanished over the blade. On
+those three the scrim keeps every pixel under the bar at 6.6:1 or better
+against the light bar text. The script processes only the wallpapers listed
+in it, marks what it processed and skips it on a rerun.
 
 Omarchy has no default-background key: on a first apply it takes the first
 file in sort order, hence the `00-` prefix.
@@ -243,7 +263,7 @@ approach, with a softer preset of its own: `saber` inherits hyprglass's
 as rounded glass instead of a fisheye. The 0.55 alpha gate matches the blur
 rules, so a menu's scrim never refracts.
 
-Measured cost on this laptop (Hyprland on the RTX 4060, two high-res
+Measured cost on the author's laptop (Hyprland on an RTX 4060, two high-res
 monitors, 15 s per case, no other test windows open):
 
 | Case | Hyprland CPU | GPU power |
@@ -258,8 +278,11 @@ bar's glass on every clock tick and pushed idle CPU to 5.3%). What remains is
 about 3% of one core and 0.5–1.5 W — small, but not free. GPU utilisation
 swung too much between runs to quote. Unload it on battery if that matters.
 
-The plugin must match the running Hyprland exactly. The prebuilt release links
-against an older aquamarine, so build it locally:
+The plugin must match the running Hyprland and its libraries exactly, and a
+prebuilt release is tied to the exact build it was made on, so build it
+locally. You need `make`, `g++`, `pkg-config` and Hyprland's headers
+(`pkg-config --modversion hyprland` should print your Hyprland version); it
+takes seconds:
 
 ```bash
 git clone --depth 1 --branch v0.8.1 https://github.com/hyprnux/hyprglass ~/.local/share/hyprglass/src
@@ -273,17 +296,27 @@ A compositor plugin runs inside Hyprland with full access to your session,
 so check the commit before building: a tag can be moved, a commit hash
 cannot. The hash above is the v0.8.1 this theme was tested with.
 
-That loads it for the current session only. To load it at every login, run
-the same two commands on start, e.g. in `~/.config/hypr/autostart.lua`:
+That loads it for the current session only. To load it at every login, add
+this to `~/.config/hypr/autostart.lua`. It loads the plugin, reloads the
+config so the theme's hyprglass block runs, and tells you when a Hyprland
+update has left the build behind:
 
 ```lua
-o.exec_on_start([[f="$HOME/.local/share/hyprglass/src/hyprglass.so"; [ -f "$f" ] && hyprctl plugin load "$f" | grep -qx ok && hyprctl reload]])
+o.exec_on_start([[
+f="$HOME/.local/share/hyprglass/src/hyprglass.so"
+[ -f "$f" ] || exit 0
+if hyprctl plugin load "$f" | grep -qx ok; then
+  hyprctl reload
+else
+  omarchy-notification-send "hyprglass did not load" "Rebuild it for this Hyprland: make -C ~/.local/share/hyprglass/src"
+fi
+]])
 ```
 
 The theme leaves `blur.new_optimizations` on: hyprglass sets `noblur` on the
-windows and layers it glasses, so the cached blur never hides the glass. Rebuild after every Hyprland
-update; a mismatched build refuses to load. To unload:
-`hyprctl plugin unload ~/.local/share/hyprglass/src/hyprglass.so`.
+windows and layers it glasses, so the cached blur never hides the glass.
+Rebuild after every Hyprland update; a mismatched build refuses to load. To
+unload: `hyprctl plugin unload ~/.local/share/hyprglass/src/hyprglass.so`.
 
 ## Animations
 
@@ -300,7 +333,8 @@ Workspace switching is animated here, while Omarchy's defaults have it off.
 The active/inactive opacity change fades, so focus moves smoothly across the
 glass. The bar, the Omarchy menu and the bar panels keep Omarchy's own `no_anim`
 rules: Hyprland can only move or scale a whole full-screen layer, so the
-panels' motion belongs in the shell's QML, not in the theme. Anything in `~/.config/hypr/looknfeel.lua` still wins.
+panels' motion belongs in the shell's QML, not in the theme. Anything in
+`~/.config/hypr/looknfeel.lua` still wins.
 
 ## Generated from `colors.toml`
 
