@@ -20,6 +20,12 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 REPO=$PWD
+# The repo path is spliced into a Hyprland exec string; allow only plain path
+# characters so a space or a quote in it cannot break or extend that command.
+[[ $REPO =~ ^[A-Za-z0-9._/+-]+$ ]] || {
+  echo "move the checkout to a path without spaces or quotes: $REPO" >&2
+  exit 1
+}
 WS=${PREVIEW_WORKSPACE:-8}
 TAG=sw-preview
 PIN_BG=00-sith-star-wars-lightsaber-dark-background-3840x2160-5554.jpg
