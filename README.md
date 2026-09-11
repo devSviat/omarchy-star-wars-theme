@@ -367,3 +367,10 @@ Omarchy's own templates. Icons are `Yaru-blue-dark`.
 | `capture-previews.sh` | shoots `preview.png` and `preview-glass.png` from the running desktop — each theme applied in turn, two floating windows placed so a lightsaber crosses each window's edge, where the glass differs most |
 | `install-themes.sh` | installs both themes: the symlink and the Star Wars Glass link directory |
 | `bar-scrim.sh` | darkens the strip under the bar in the listed wallpapers, so the bar stays legible with its background on or off |
+
+## License
+
+The theme files, scripts and documentation in this repository are under the
+[MIT License](LICENSE). That covers only what is here: the wallpapers and the
+Star Wars artwork `tools/get-wallpapers.sh` downloads are not part of the
+repository and stay with their owners (see [Backgrounds](#backgrounds)).
