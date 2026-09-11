@@ -5,14 +5,13 @@ smoke, a red blade and a violet one. The accent is the steel-blue smoke around
 the figure, lifted, and the border runs from its light to its shadow. Its defining feature is glass — translucent windows, terminals
 and shell surfaces over a Hyprland blur. Local only; no remote.
 
-**No third-party artwork is ever committed.** The repo is public; the
-wallpapers are Star Wars art by other people. `backgrounds/`, `unlock.png`,
-`preview-unlock.png`, `preview.png` and `preview-glass.png` are gitignored and
-rebuilt locally: `tools/get-wallpapers.sh` downloads the wallpapers (pinned
-SHA-256) and runs `bar-scrim.sh` and `generate-orrery.sh`; previews come from
-`capture-previews.sh`. A new wallpaper means a new line in
-`get-wallpapers.sh` with its source name and hash, never a committed file.
-Git history was rewritten once to remove images that had been committed.
+**The wallpapers are committed.** The repo is public, and the wallpapers are
+third-party Star Wars art: the user first published without them (history
+rewritten to purge images, a downloader script), then chose to ship them after
+all. `backgrounds/`, `unlock.png`, `preview-unlock.png`, `preview.png` and
+`preview-glass.png` are in git; README credits the authors and says the MIT
+license does not cover them. Keep that credit and notice accurate when the
+set of wallpapers changes.
 
 Derived from `~/Projects/omarchy-devsviat-theme` (slug `dev-sviat`); that
 repo's `docs/RESEARCH.md` is the full account of how Omarchy 4 theming works

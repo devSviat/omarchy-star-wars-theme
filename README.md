@@ -5,18 +5,19 @@ wallpaper — navy-black smoke, one red blade, one violet blade — with frosted
 glass everywhere: translucent windows, terminals, bar, menus and
 notifications over a Hyprland blur.
 
-> **The wallpapers are not in this repository.** They are Star Wars artwork
-> by other people, so the repo doesn't redistribute them. `tools/get-wallpapers.sh`
-> downloads them from their source and checks each against a pinned SHA-256.
-> Screenshots aren't included for the same reason — they would show that
-> artwork — but `tools/capture-previews.sh` makes them on your own desktop.
+| Star Wars | Star Wars Glass |
+|:---:|:---:|
+| ![Star Wars](preview.png) | ![Star Wars Glass](preview-glass.png) |
+
+> The wallpapers are Star Wars artwork by other people, included with credit
+> to their authors — see [Backgrounds](#backgrounds). All rights stay with
+> their owners; the MIT license covers only the theme's own files.
 
 **Quick start** (details in [Install](#install)):
 
 ```bash
 git clone https://github.com/devSviat/omarchy-star-wars-theme.git ~/Projects/omarchy-star-wars-theme
 cd ~/Projects/omarchy-star-wars-theme
-./tools/get-wallpapers.sh      # the wallpapers, checked against pinned SHA-256s
 ./tools/install-themes.sh      # adds Star Wars and Star Wars Glass to Omarchy
 omarchy theme set star-wars
 ```
@@ -38,16 +39,14 @@ itself is decided at load time in `hyprland.lua`, from the active theme's
 name in `~/.local/state/omarchy/current/theme.name`. Change something once
 and both themes have it.
 
-Each theme gets its own thumbnail in the theme switcher once you run
-`tools/capture-previews.sh` (`preview.png` and `preview-glass.png`, both
-local-only); until then the switcher shows the first wallpaper.
+Each theme has its own thumbnail in the theme switcher: `preview.png` and
+`preview-glass.png`, real screenshots from `tools/capture-previews.sh`.
 
 ## Install
 
 Needs Omarchy 4 (Hyprland with the Lua config and the Quickshell bar); tested
-on Omarchy 4.0.3 with Hyprland 0.56.2. `get-wallpapers.sh` also needs `curl`
-and ImageMagick, both part of a standard Omarchy install. Star Wars Glass
-additionally needs the hyprglass plugin, built in step 5.
+on Omarchy 4.0.3 with Hyprland 0.56.2. Star Wars Glass additionally needs
+the hyprglass plugin, built in step 4.
 
 1. **Get the repo** somewhere permanent — both themes point into it, so don't
    move or delete it afterwards:
@@ -57,18 +56,7 @@ additionally needs the hyprglass plugin, built in step 5.
    cd ~/Projects/omarchy-star-wars-theme
    ```
 
-2. **Fetch the wallpapers** (about 20 MB; needs `curl` and ImageMagick):
-
-   ```bash
-   ./tools/get-wallpapers.sh
-   ```
-
-   It downloads each wallpaper from 4kwallpapers.com, rejects any file whose
-   SHA-256 differs from the pinned one, darkens the strip under the bar on
-   three of them, and builds the orrery unlock screen. Without it the theme
-   still works — it just has no wallpapers of its own.
-
-3. **Install both themes:**
+2. **Install both themes:**
 
    ```bash
    ./tools/install-themes.sh
@@ -79,7 +67,7 @@ additionally needs the hyprglass plugin, built in step 5.
    symlinks into the repo, with its own `preview.png`). Both then show up in
    Omarchy Menu → Style → Theme as **Star Wars** and **Star Wars Glass**.
 
-4. **Apply one** — from Omarchy Menu → Style → Theme, or:
+3. **Apply one** — from Omarchy Menu → Style → Theme, or:
 
    ```bash
    omarchy theme set star-wars          # Hyprland blur only
@@ -88,12 +76,12 @@ additionally needs the hyprglass plugin, built in step 5.
 
    Check it came up clean: `hyprctl configerrors` should print nothing.
 
-5. **For Star Wars Glass, build and load hyprglass.** Without the plugin,
+4. **For Star Wars Glass, build and load hyprglass.** Without the plugin,
    Star Wars Glass looks exactly like Star Wars. See
    [Liquid glass](#liquid-glass-optional-hyprglass) for the build, the
    per-session load and loading it at every login.
 
-6. **Optional extras:**
+5. **Optional extras:**
 
    - *GTK apps (Files, Disks, …)* read the theme's `gtk.css` only through a
      user-level link, and only at startup:
@@ -103,7 +91,7 @@ additionally needs the hyprglass plugin, built in step 5.
      nautilus -q    # then reopen Files
      ```
 
-   - *Boot splash and login screen* (the Ahsoka orrery, built in step 2):
+   - *Boot splash and login screen* (the Ahsoka orrery):
      Omarchy Menu → Style → Unlock → Star Wars, or
      `omarchy-plymouth-set-by-theme star-wars` (asks for sudo, rebuilds the
      initramfs).
@@ -111,12 +99,11 @@ additionally needs the hyprglass plugin, built in step 5.
    - *The bar* works with its background on or off — double-click the bar to
      switch. The theme's bar tint shows only with the background on.
 
-   - *Theme-switcher thumbnails*: switch a monitor to an empty workspace and
-     run `PREVIEW_WORKSPACE=<n> ./tools/capture-previews.sh`. It applies each
-     theme in turn, screenshots it (with `grim`, `foot`, `fastfetch` and
-     `nvim`, all shipped with Omarchy) and puts your theme back. Star Wars
-     Glass picks its thumbnail up on its own; until then its `preview.png`
-     link points at a file that doesn't exist yet, which the switcher ignores.
+   - *Retake the thumbnails* after changing the theme: switch a monitor to an
+     empty workspace and run `PREVIEW_WORKSPACE=<n> ./tools/capture-previews.sh`.
+     It applies each theme in turn, screenshots it (with `grim`, `foot`,
+     `fastfetch` and `nvim`, all shipped with Omarchy) and puts your theme
+     back.
 
 ### Why not `omarchy theme install`
 
@@ -132,7 +119,6 @@ theme with `cp -r`, which copies symlinks as they are.
 ```bash
 cd ~/Projects/omarchy-star-wars-theme
 git pull
-./tools/get-wallpapers.sh        # fetches any wallpaper added since
 ./tools/install-themes.sh        # picks up any new top-level file
 omarchy theme set star-wars-glass   # or star-wars — re-apply to stage the changes
 ```
@@ -221,9 +207,8 @@ star-wars-maul
 the-mandalorian-season-2-tv-series-2020
 ```
 
-None of these files are in the repo; `tools/get-wallpapers.sh` fetches them
-from [4kwallpapers.com](https://4kwallpapers.com/) (names as published
-there), where the credits are. The Ahsoka Tano 2023 art is by Andre Zottolo
+The wallpapers come from [4kwallpapers.com](https://4kwallpapers.com/)
+(names as published there), where the credits are. The Ahsoka Tano 2023 art is by Andre Zottolo
 and The Mandalorian season 2 edit by aggro, per the files' own metadata; the
 characters and the rest are Lucasfilm's. All rights stay with their owners.
 
@@ -245,9 +230,9 @@ file in sort order, hence the `00-` prefix.
 Omarchy Menu -> Style -> Unlock (the Plymouth boot splash and SDDM greeter)
 uses `unlock.png`: the Ahsoka orrery, traced in a navy-grey ink so the boot
 splash matches the orrery wallpaper in the rotation. `tools/generate-orrery.sh`
-builds both, and a `preview-unlock.png` for the picker, from the untouched
-Ahsoka orrery artwork — `tools/get-wallpapers.sh` fetches that and runs it for
-you. Like the wallpapers, none of these files are committed.
+rebuilds both, and a `preview-unlock.png` for the picker, from the untouched
+Ahsoka orrery artwork (`star-wars-ahsoka-3840x2160-12833.jpg` on
+4kwallpapers.com).
 
 ## Liquid glass (optional hyprglass)
 
@@ -352,9 +337,8 @@ Omarchy's own templates. Icons are `Yaru-blue-dark`.
   installing, as with any theme that ships Lua.
 - The scripts in `tools/` run only when you call them. `install-themes.sh`
   writes under `~/.config/omarchy/themes/` and only replaces what it created
-  itself; `get-wallpapers.sh` downloads over HTTPS and rejects anything that
-  fails its pinned SHA-256; the others work inside the checkout and a private
-  temporary directory.
+  itself; the others work inside the checkout and a private temporary
+  directory. None of them downloads anything.
 - hyprglass is optional, third-party and runs inside the compositor — see
   [Liquid glass](#liquid-glass-optional-hyprglass).
 
@@ -362,7 +346,6 @@ Omarchy's own templates. Icons are `Yaru-blue-dark`.
 
 | File | What it does |
 |---|---|
-| `get-wallpapers.sh` | downloads the wallpapers (pinned SHA-256), applies the bar scrim, builds the orrery files |
 | `generate-orrery.sh` | builds `unlock.png`, `preview-unlock.png` and the orrery wallpaper |
 | `capture-previews.sh` | shoots `preview.png` and `preview-glass.png` from the running desktop — each theme applied in turn, two floating windows placed so a lightsaber crosses each window's edge, where the glass differs most |
 | `install-themes.sh` | installs both themes: the symlink and the Star Wars Glass link directory |
@@ -371,6 +354,7 @@ Omarchy's own templates. Icons are `Yaru-blue-dark`.
 ## License
 
 The theme files, scripts and documentation in this repository are under the
-[MIT License](LICENSE). That covers only what is here: the wallpapers and the
-Star Wars artwork `tools/get-wallpapers.sh` downloads are not part of the
-repository and stay with their owners (see [Backgrounds](#backgrounds)).
+[MIT License](LICENSE). The wallpapers in `backgrounds/`, the unlock images
+and the previews are Star Wars artwork by other people, or screenshots over
+it: they are not covered by that license and stay with their owners (see
+[Backgrounds](#backgrounds)).

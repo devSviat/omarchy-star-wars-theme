@@ -2,13 +2,3 @@
 *.tmp
 .DS_Store
 __pycache__/
-
-# Third-party artwork is never committed. The wallpapers are Star Wars art by
-# other people; tools/get-wallpapers.sh fetches them, and everything derived
-# from them (the orrery unlock screen, the theme-switcher previews, which are
-# screenshots over the wallpaper) is built locally.
-/backgrounds/
-/unlock.png
-/preview-unlock.png
-/preview.png
-/preview-glass.png
