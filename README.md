@@ -5,8 +5,6 @@ wallpaper — navy-black smoke, one red blade, one violet blade — with frosted
 glass everywhere: translucent windows, terminals, bar, menus and
 notifications over a Hyprland blur.
 
-![preview](preview.png)
-
 ## Two themes: Star Wars and Star Wars Glass
 
 This one directory is two Omarchy themes, kept in parallel:
@@ -16,28 +14,103 @@ This one directory is two Omarchy themes, kept in parallel:
 | **Star Wars** | `star-wars` | Hyprland's own blur only; if hyprglass is loaded, the theme switches it off |
 | **Star Wars Glass** | `star-wars-glass` | the same theme plus hyprglass liquid glass (`saber` preset) |
 
-Both slugs are symlinks to the same directory, so every file — palette,
-borders, bar, terminals, wallpapers — is shared and the two cannot drift. The
-only difference is decided at load time in `hyprland.lua`, from the active
-theme's name in `~/.local/state/omarchy/current/theme.name`. Change something
-once and both themes have it.
+Every file — palette, borders, bar, terminals, wallpapers — comes from this
+one directory, so the two cannot drift. `star-wars` is a symlink to it;
+`star-wars-glass` is a directory of absolute symlinks into it, so that it can
+carry its own thumbnail (`preview.png` -> `preview-glass.png`). The glass
+itself is decided at load time in `hyprland.lua`, from the active theme's
+name in `~/.local/state/omarchy/current/theme.name`. Change something once
+and both themes have it.
+
+| Star Wars | Star Wars Glass |
+|:---:|:---:|
+| ![Star Wars](preview.png) | ![Star Wars Glass](preview-glass.png) |
 
 ## Install
 
+Needs Omarchy 4 (Hyprland with the Lua config and the Quickshell bar). Star
+Wars Glass additionally needs the hyprglass plugin, set up in step 4.
+
+1. **Get the repo** somewhere permanent — both themes point into it, so don't
+   move or delete it afterwards:
+
+   ```bash
+   git clone <this repo> ~/Projects/omarchy-star-wars-theme
+   cd ~/Projects/omarchy-star-wars-theme
+   ```
+
+2. **Install both themes:**
+
+   ```bash
+   ./tools/install-themes.sh
+   ```
+
+   This creates `~/.config/omarchy/themes/star-wars` (a symlink to the repo)
+   and `~/.config/omarchy/themes/star-wars-glass` (a directory of absolute
+   symlinks into the repo, with its own `preview.png`). Both then show up in
+   Omarchy Menu → Style → Theme as **Star Wars** and **Star Wars Glass**.
+
+3. **Apply one** — from Omarchy Menu → Style → Theme, or:
+
+   ```bash
+   omarchy theme set star-wars          # Hyprland blur only
+   omarchy theme set star-wars-glass    # plus hyprglass liquid glass
+   ```
+
+   Check it came up clean: `hyprctl configerrors` should print nothing.
+
+4. **For Star Wars Glass, build and load hyprglass.** Without the plugin,
+   Star Wars Glass looks exactly like Star Wars. See
+   [Liquid glass](#liquid-glass-optional-hyprglass) for the build, the
+   per-session load and loading it at every login.
+
+5. **Optional extras:**
+
+   - *GTK apps (Files, Disks, …)* read the theme's `gtk.css` only through a
+     user-level link, and only at startup:
+
+     ```bash
+     ln -sfn ~/.local/state/omarchy/current/theme/gtk.css ~/.config/gtk-4.0/gtk.css
+     nautilus -q    # then reopen Files
+     ```
+
+   - *Boot splash and login screen* (the Ahsoka orrery): Omarchy Menu → Style
+     → Unlock → Star Wars, or `omarchy-plymouth-set-by-theme star-wars`
+     (asks for sudo, rebuilds the initramfs).
+
+   - *The bar* works with its background on or off — double-click the bar to
+     switch. The theme's bar tint shows only with the background on.
+
+### Why not `omarchy theme install`
+
+A theme cloned by `omarchy theme install` is treated as untrusted: Omarchy
+drops every `*.lua` and the terminal configs from it — exactly the files that
+carry the blur, the glass switch and the terminal transparency. The symlinks
+from `install-themes.sh` skip that filter. For the same reason `.git` is never
+linked into Star Wars Glass, and the links are absolute: Omarchy stages a
+theme with `cp -r`, which copies symlinks as they are.
+
+### Update
+
 ```bash
-ln -sfn "$PWD" ~/.config/omarchy/themes/star-wars
-ln -sfn "$PWD" ~/.config/omarchy/themes/star-wars-glass
-omarchy theme set star-wars          # or: omarchy theme set star-wars-glass
+cd ~/Projects/omarchy-star-wars-theme
+git pull
+./tools/install-themes.sh        # picks up any new top-level file
+omarchy theme set star-wars-glass   # or star-wars — re-apply to stage the changes
 ```
 
-Star Wars Glass needs the hyprglass plugin loaded — see
-[Liquid glass](#liquid-glass-optional-hyprglass) below. Without it, Star Wars
-Glass looks exactly like Star Wars.
+After an Omarchy update that bumps Hyprland, rebuild hyprglass (see
+[Liquid glass](#liquid-glass-optional-hyprglass)); until then Star Wars Glass
+falls back to the plain look and a notification says so.
 
-Use a symlink, not `omarchy theme install`. A theme cloned from a repo is
-filtered: Omarchy drops every `*.lua` and the terminal configs from it, and
-those are exactly the files that carry the blur and the terminal
-transparency. A symlink skips that filter.
+### Uninstall
+
+Switch to another theme first, then:
+
+```bash
+rm ~/.config/omarchy/themes/star-wars
+rm -r ~/.config/omarchy/themes/star-wars-glass   # only links, the repo is untouched
+```
 
 ## Palette
 
@@ -94,12 +167,27 @@ the app (`nautilus -q`) to repaint.
 
 ```
 00-sith-star-wars-lightsaber-dark-background   <- default
+ahsoka-tano-2023                                (5650x2160, cropped to the centre)
+amandla-stenberg
+kylo-ren-star-wars-dark-background-lightsaber-cosplay
 kylo-ren-star-wars-the-rise-of-skywalker-black
 nostalgic-room
+sev-clone-troopers-star-wars-republic-commando
 star-wars-ahsoka-orrery                         (DevSviat's ink, see below)
-star-wars-the-7680x4320
-stormtrooper-star-wars-neon
+star-wars-maul
+the-mandalorian-season-2-tv-series-2020
 ```
+
+Three wallpapers — Kylo Ren with the lightsaber (cosplay), the Sev clone
+trooper and Maul — carry a
+soft dark scrim across the top (`tools/bar-scrim.sh`: black at 72% under the
+bar, fading out by 14% of the height). The rest are untouched. With the bar's own background off — double-click the bar — Omarchy
+picks one text colour from the *average* of the strip under it, so a dark
+strip with a lightsaber or a burst of smoke got light text that vanished over
+the bright part. On those three the scrim keeps every pixel under the bar at 6.6:1
+or better against the light bar text, in both bar modes. The script processes
+only the wallpapers listed in it, marks what it processed and skips it on a
+rerun.
 
 Omarchy has no default-background key: on a first apply it takes the first
 file in sort order, hence the `00-` prefix.
@@ -192,4 +280,6 @@ Omarchy's own templates. Icons are `Yaru-blue-dark`.
 | File | What it does |
 |---|---|
 | `generate-orrery.sh` | builds `unlock.png`, `preview-unlock.png` and the orrery wallpaper |
-| `preview.html` + `generate-preview.sh` | renders `preview.png` with headless Chromium |
+| `capture-previews.sh` | shoots `preview.png` and `preview-glass.png` from the running desktop — each theme applied in turn, two floating windows placed so a lightsaber crosses each window's edge, where the glass differs most |
+| `install-themes.sh` | installs both themes: the symlink and the Star Wars Glass link directory |
+| `bar-scrim.sh` | darkens the strip under the bar in the listed wallpapers, so the bar stays legible with its background on or off |

@@ -12,18 +12,19 @@ and is not duplicated here.
 ## Two themes, maintained in parallel
 
 This directory is **two** Omarchy themes: `star-wars` (**Star Wars**, no
-hyprglass) and `star-wars-glass` (**Star Wars Glass**, with hyprglass). Both
-are symlinks to this one repo:
-
-```bash
-ln -sfn /home/sviat/Projects/omarchy-star-wars-theme ~/.config/omarchy/themes/star-wars
-ln -sfn /home/sviat/Projects/omarchy-star-wars-theme ~/.config/omarchy/themes/star-wars-glass
-```
+hyprglass) and `star-wars-glass` (**Star Wars Glass**, with hyprglass).
+`./tools/install-themes.sh` installs both: `star-wars` is a symlink to this
+repo; `star-wars-glass` is a real directory of **absolute** symlinks into it,
+with `preview.png -> preview-glass.png` so the switcher shows its own
+thumbnail (it only reads `preview.png` at a theme's root). Absolute because
+`omarchy-theme-set` stages with `cp -r`, which copies links verbatim; never
+link `.git` in, or the theme is treated as repo-installed and loses its Lua.
 
 Rules for keeping them in parallel:
 
 - **Never split the files into two copies.** Every change goes into this one
-  directory and lands in both themes.
+  directory and lands in both themes. After adding a top-level file, rerun
+  `./tools/install-themes.sh` so Star Wars Glass links it too.
 - **The only difference is hyprglass**, chosen in `hyprland.lua` by reading
   `~/.local/state/omarchy/current/theme.name`. `omarchy-theme-set` writes that
   file right after swapping the theme in and before its final `hyprctl reload`
@@ -39,20 +40,29 @@ Rules for keeping them in parallel:
   since the shared `backgrounds/` paths would otherwise make a switch advance
   the rotation.
 
-`preview.png` is shared, so the theme switcher shows the same thumbnail for
-both.
+Thumbnails: `preview.png` (Star Wars) and `preview-glass.png` (Star Wars
+Glass) are real screenshots from `./tools/capture-previews.sh`: it applies
+each theme for real (fastfetch prints the theme name, so a shot taken under
+the wrong theme is visibly wrong) and floats two windows so the Sith
+wallpaper's blades cross their edges — where hyprglass visibly bends the
+light and plain blur does not. It needs an empty visible workspace
+(`PREVIEW_WORKSPACE`) and puts the original theme back.
 
-## Installed as a symlink, deliberately
+## Installed by `tools/install-themes.sh`, deliberately
 
 ```bash
-ln -sfn /home/sviat/Projects/omarchy-star-wars-theme ~/.config/omarchy/themes/star-wars
+./tools/install-themes.sh
 ```
 
-`omarchy-theme-set` treats a directory containing `.git` as untrusted and
-strips every `*.lua`, the four terminal configs and `vscode.json`. A symlink
-fails that check and stages in full. Never `omarchy theme install` this
-theme — it would drop `hyprland.lua` (all of the blur) and the terminal
-configs (all of the terminal transparency).
+It makes `~/.config/omarchy/themes/star-wars` a symlink to this repo and
+`~/.config/omarchy/themes/star-wars-glass` a directory of absolute symlinks
+into it (see "Two themes" below). `omarchy-theme-set` treats a theme directory
+containing `.git` as untrusted and strips every `*.lua`, the four terminal
+configs and `vscode.json`; neither install shape trips that check, so both
+stage in full. Never `omarchy theme install` this theme — it would drop
+`hyprland.lua` (all of the blur and the glass switch) and the terminal configs
+(all of the terminal transparency). The user-facing install guide is the
+Install section of README.md; keep it in step with this script.
 
 ## Where the transparency lives
 
@@ -120,6 +130,20 @@ the screen centre), so a correct drop needs a patch to Omarchy's
 `shell/Ui/KeyboardPanel.qml` — outside the theme, overwritten by every update,
 and not worth an upstream PR. The panels keep Omarchy's own 140 ms fade.
 
+## Adding a wallpaper
+
+Copy it into `backgrounds/` as it is. Do **not** darken it on your own: the
+user asked for the bar scrim only on the wallpapers they named, and had the
+scrim removed from every other one.
+
+The user toggles the bar's own background off and on (double-click the bar);
+with it off Omarchy picks one text colour from the average of the strip under
+the bar, so bright spots there can swallow the icons. If the user reports that
+for a wallpaper, add it to the `SCRIM` list in `tools/bar-scrim.sh` and run
+the script — it darkens the top (6.6:1 or better against the bar text), marks
+the file, and never touches the orrery, which must stay byte-identical to
+DevSviat's.
+
 ## Things that have already broken once (inherited from dev-sviat)
 
 1. **No inline comments in `colors.toml`** — `omacalc` swallows them into the
@@ -143,7 +167,7 @@ grep -r '{{' ~/.local/state/omarchy/current/theme/ \
 Re-applying advances the wallpaper rotation; this machine pins it back with
 `~/.local/bin/omarchy-bg-pin` (pinned to the `00-sith-...` wallpaper).
 
-Editing `colors.toml` makes `preview.png` stale (`./tools/generate-preview.sh`)
+Editing `colors.toml` makes both previews stale (`./tools/capture-previews.sh`)
 and `preview-unlock.png` stale (`./tools/generate-orrery.sh
 ~/Wallpapers/star-wars-ahsoka-3840x2160-12833.jpg`). `unlock.png` and the
 orrery wallpaper deliberately use DevSviat's ink, not this palette, so they
