@@ -4,4 +4,4 @@ background       = "#0d0e15"
 background-alpha = 0.9
 text             = "#dcd6e6"
 border           = "hyprland.active-border-foreground"
-border-alpha     = 1.0
+border-alpha     = 0.85

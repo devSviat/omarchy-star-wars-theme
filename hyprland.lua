@@ -25,10 +25,16 @@ local hl = hl
 ---@diagnostic disable-next-line: undefined-global
 local o = o
 
--- Lit smoke -> smoke in shadow. colors.toml hyprland_active_border. colors.toml hyprland_active_border.
-local active_border_color = { colors = { "rgba(8fb4e3ee)", "rgba(4f6a9aee)" }, angle = 45 }
--- colors.toml hyprland_inactive_border
-local inactive_border_color = "rgba(2a2b3caa)"
+-- The border is a glass rim, after the Velora Liquid Glass theme, lit in this
+-- theme's own colour: pale steel (#cfe0f7, 40%) catching the top edge and
+-- settling into the steel-blue accent (#7fa6d8, 18%) at the bottom, top to
+-- bottom at 90 degrees. On translucent, blurred windows that reads as the edge
+-- of a pane of glass in the smoke's light rather than as a coloured frame.
+-- colors.toml hyprland_active_border.
+local active_border_color = { colors = { "rgba(cfe0f766)", "rgba(7fa6d82e)" }, angle = 90 }
+-- colors.toml hyprland_inactive_border: the smoke's mid tone (#26354f) at 50%,
+-- a soft navy edge in the same glass as the bar and the windows.
+local inactive_border_color = "rgba(26354f80)"
 
 hl.config({
   general = {
@@ -51,13 +57,21 @@ hl.config({
 
   decoration = {
     rounding = 10,
+    -- Above 2 the corner becomes a superellipse instead of a circular arc —
+    -- the softer, continuous curve of a real glass pane (Velora uses 3). The
+    -- shell reads decoration:rounding for its own corner radius, so bar
+    -- panels, menus and notifications follow.
+    rounding_power = 3,
 
-    -- A soft drop so translucent panes still separate from the wallpaper.
+    -- A soft drop, lit from above like the rim: offset 5 px down so each pane
+    -- floats over the wallpaper instead of sitting in a dark halo.
     shadow = {
       enabled = true,
-      range = 22,
+      range = 25,
       render_power = 3,
-      color = "rgba(050609cc)",
+      offset = { 0, 5 },
+      color = "rgba(05060999)",
+      color_inactive = "rgba(05060966)",
     },
 
     -- Frosted glass. Three passes at size 9 is a wide, smooth blur without
@@ -129,9 +143,11 @@ o.window({ tag = "terminal" }, { opacity = "1.0 0.94" })
 -- the shell.*.toml sections; ignore_alpha skips blurring any pixel at or
 -- below that alpha.
 --
--- The bar is a strip of glass at 0.45, so it takes a low threshold that only
+-- The bar is a strip of glass at 0.7, so it takes a low threshold that only
 -- skips its fully transparent edges.
-hl.layer_rule({ match = { namespace = "^omarchy-bar$" }, blur = true, ignore_alpha = 0.15 })
+-- blur_popups also frosts the xdg popups the bar opens (tray menus, media,
+-- tooltips), as Velora does.
+hl.layer_rule({ match = { namespace = "^omarchy-bar$" }, blur = true, blur_popups = true, ignore_alpha = 0.15 })
 
 -- Everything else is a full-screen layer: a scrim (0.1 in shell.menu.toml /
 -- shell.launcher.toml, 0.45 for polkit, 0.5 for the image picker) with a card
@@ -143,5 +159,53 @@ hl.layer_rule({
     namespace = "^(omarchy-menu|omarchy-notifications|omarchy-osd|omarchy-polkit|omarchy-clipboard|omarchy-emojis|omarchy-keyboard-panel|omarchy-reminders|omarchy-network-qr|omarchy-image-selector)$",
   },
   blur = true,
+  blur_popups = true,
   ignore_alpha = 0.55,
 })
+
+-- Real liquid glass, optional. The hyprglass compositor plugin
+-- (https://github.com/hyprnux/hyprglass) adds what Hyprland's own blur cannot:
+-- edge refraction, chromatic aberration and a specular sheen. It is not part of
+-- this theme and nothing here loads it; this block only configures it when it
+-- is already loaded, so without the plugin the theme is unchanged. Adapted from
+-- the Velora Liquid Glass theme, which found the built-in presets reliable
+-- where hand-tuned parameters showed no visible effect.
+if hl.plugin and hl.plugin.hyprglass then
+  local hg = hl.plugin.hyprglass
+
+  -- A softer glass than the built-in "glass" preset, whose refraction (8.0),
+  -- chromatic aberration (0.5) and lens distortion (0.3) bend the wallpaper
+  -- hard at every corner and fringe it in colour. "saber" keeps the look —
+  -- a lensed edge and a specular sheen — at a fraction of the bend, with a
+  -- thinner bezel, so corners read as rounded glass rather than a fisheye.
+  hg.preset("saber", {
+    inherits = "glass",
+    refraction_strength = 3.0,
+    chromatic_aberration = 0.15,
+    lens_distortion = 0.12,
+    edge_thickness = 0.035,
+    fresnel_strength = 0.3,
+    specular_strength = 0.5,
+  })
+
+  hg.config({
+    enabled = true,
+    default_theme = "dark",
+    default_preset = "saber",
+    -- live_resample re-renders a layer's glass whenever anything behind it
+    -- changes, and the bar sits over a clock that ticks every second, so it
+    -- kept the compositor busy at idle. The bar is over the wallpaper and
+    -- menus and panels are short-lived, so a static backdrop is invisible.
+    layers = { enabled = true, live_resample = false },
+  })
+
+  -- Hyprland's cached blur is captured before hyprglass draws, which hides the
+  -- glass on any window that is not being moved; hyprglass needs it off.
+  hl.config({ decoration = { blur = { new_optimizations = false } } })
+
+  hg.layer("omarchy-bar", { preset = "saber" })
+  -- Full-screen scrim + card layers take the same 0.55 alpha gate as the blur
+  -- rule above, so only the card refracts and the scrim stays a plain wash.
+  hg.layer("omarchy-menu", { preset = "saber", mask_threshold = 0.55 })
+  hg.layer("omarchy-keyboard-panel", { preset = "saber", mask_threshold = 0.55 })
+end

@@ -27,7 +27,7 @@ configs (all of the terminal transparency).
 
 | Layer | File | Value |
 |---|---|---|
-| Animations (curves ignite / retract / glide / hyperspace) | `hyprland.lua` | workspaces slide + fade |
+| Animations (curves ignite / retract / glide / hyperspace) | `hyprland.lua` | workspaces slide + fade, 250 ms. Bar panels are NOT animated here: `omarchy-keyboard-panel` is full-screen, and Hyprland's layer `slide` always starts fully off-screen while `popin` scales about the screen centre (LayerSurfaceAnimationController.cpp), so a short drop from the bar can only live in the shell's QML |
 | Blur, shadow, rounding, border | `hyprland.lua` | blur size 9 x 3 passes, brightness 0.75 |
 | Window opacity (non-terminal) | `hyprland.lua` | `default-opacity` tag -> `0.9 0.82` |
 | Terminal window opacity | `hyprland.lua` | `terminal` tag -> `1.0 0.94` |
@@ -49,6 +49,43 @@ matching keys in ghostty/kitty/alacritty). foot 1.28 is built `+blur` and
 speaks `ext-background-effect-v1`; with its default `blur=no` it tells
 Hyprland not to blur behind it, so the window is translucent but sharp and no
 Hyprland setting can override that. Found by an A/B run of two foot windows.
+
+## The bar's own transparent mode hides the theme's bar tint
+
+`shell.bar.toml` sets the bar's glass tint, but Omarchy's bar has a separate
+transparent mode (`bar.transparent` in `~/.config/omarchy/shell.json`, toggled
+from Omarchy Menu -> Style -> Bar -> Transparency or `omarchy-bar transparent
+true|false`). With it on, the bar draws no background at all — only the
+darkest strip of the wallpaper shows, and no theme value reaches it. That is
+what made the bar read near-black next to the windows. On this machine it is
+set to `false`; the shell writes that key only on a manual toggle.
+
+When measuring the bar against a window, wait a few seconds after
+`omarchy theme set`: the theme transition briefly paints the bar black.
+
+## hyprglass
+
+`hyprland.lua` ends with an `if hl.plugin and hl.plugin.hyprglass` block — inert
+unless the plugin is loaded. The prebuilt `hyprglass.so` release links
+`libaquamarine.so.13`, this machine has `.so.14`, so it is built locally in
+`~/.local/share/hyprglass/src` (plain `make`, no hyprpm — hyprpm needs sudo and
+cmake/meson). Loaded per session with `hyprctl plugin load`, then
+`hyprctl reload` so the block runs; not autoloaded. The block turns
+`blur.new_optimizations` off, which hyprglass needs. Rebuild after each
+Hyprland update. The theme defines its own preset, `saber` (inherits
+`glass`, refraction 3.0 instead of 8.0, aberration 0.15, lens 0.12, bezel
+0.035) — the stock `glass` bent the corners into a fisheye. Measured cost with
+`layers.live_resample = false` (on, it re-rendered the bar glass every clock
+tick): Hyprland idle CPU 1.1% without the plugin, 3.9% with it; about +0.5 to
+1.5 W. When benchmarking, find the test windows by /proc cmdline — `pgrep -f`
+on a pattern that appears in your own command line kills the script, and
+`^foot` misses `/usr/bin/foot`.
+
+Bar-panel open/close motion was tried and dropped: Hyprland can only move a
+whole full-screen layer (`slide` starts fully off-screen, `popin` scales about
+the screen centre), so a correct drop needs a patch to Omarchy's
+`shell/Ui/KeyboardPanel.qml` — outside the theme, overwritten by every update,
+and not worth an upstream PR. The panels keep Omarchy's own 140 ms fade.
 
 ## Things that have already broken once (inherited from dev-sviat)
 

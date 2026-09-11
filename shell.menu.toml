@@ -4,7 +4,7 @@ background                = "#0d0e15"
 background-alpha          = 0.68
 text                      = "#dcd6e6"
 border                    = "hyprland.active-border-foreground"
-border-alpha              = 1.0
+border-alpha              = 0.85
 scrim                     = "#050609"
 scrim-alpha               = 0.1
 # The selected row is lit in the accent.

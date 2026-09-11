@@ -35,10 +35,15 @@ dark_foreground   = "#9690ab"
 light_foreground  = "#ece8f4"
 bright_foreground = "#ffffff"
 
-# Lit smoke -> smoke in shadow, at 45 degrees. Kept in step by hand with
-# hyprland.lua, which is written out rather than generated.
-hyprland_active_border   = "rgba(8fb4e3ee) rgba(4f6a9aee) 45deg"
-hyprland_inactive_border = "rgba(2a2b3caa)"
+# A glass rim, after the Velora Liquid Glass theme, in this theme's own light:
+# pale steel (#cfe0f7, 40%) catching the top edge, settling into the accent
+# (#7fa6d8, 18%) at the bottom (90 degrees = top to bottom). Inactive windows
+# keep only the smoke's mid tone (#26354f, 50%), a soft navy edge that sits in
+# the same glass as the bar and the windows. The shell's [hyprland] tokens
+# take this too, so menus, panels and notifications wear the same rim. Kept in
+# step by hand with hyprland.lua, which is written out rather than generated.
+hyprland_active_border   = "rgba(cfe0f766) rgba(7fa6d82e) 90deg"
+hyprland_inactive_border = "rgba(26354f80)"
 
 red     = "#e5484d"
 yellow  = "#f0c05a"

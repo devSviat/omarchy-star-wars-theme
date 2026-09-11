@@ -8,6 +8,6 @@ text-error       = "#e5484d"
 border           = "hyprland.active-border"
 border-active    = "hyprland.active-border"
 border-error     = "#e5484d"
-border-alpha     = 1.0
+border-alpha     = 0.85
 selection        = "#7fa6d8"
 selection-alpha  = 0.45

@@ -1,9 +1,21 @@
 # Full [bar] section. shell.<section>.toml REPLACES the generated section
 # outright — it is not merged — so every key the template defines is repeated
 # here. The bar is glass: Hyprland blurs behind the omarchy-bar layer
-# (hyprland.lua), so a low alpha reads as frosted, not as missing.
+# (hyprland.lua).
+#
+# Tint and alpha are tuned against what the windows actually render as, not
+# against `background`. The strip behind the bar is the darkest part of every
+# wallpaper (#080a0d on the Sith one), so the tint has to carry the colour on
+# its own. Measured over the Sith wallpaper: a terminal renders as #101218;
+# #12141c at 0.7 put the bar at #121319, the same hue but level with the
+# windows, which merged them. The theme's own `background` at 0.7 keeps the
+# hue and sits a step or two deeper — one glass family, the bar still chrome.
+#
+# This only shows when the bar's own transparent mode is off (Omarchy Menu ->
+# Style -> Bar -> Transparency, or `omarchy-bar transparent false`); in that
+# mode the bar draws no background at all and no theme tint can reach it.
 background       = "#0d0e15"
-background-alpha = 0.45
+background-alpha = 0.7
 text             = "#dcd6e6"
 # Modules calling attention to themselves (recording, voxtype, alerts, updates)
 active           = "#e5484d"
