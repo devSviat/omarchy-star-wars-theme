@@ -108,7 +108,7 @@ hl.animation({ leaf = "fadeOut", enabled = true, speed = 2.5, bezier = "retract"
 -- snapping between 0.9 and 0.82.
 hl.animation({ leaf = "fadeSwitch", enabled = true, speed = 4, bezier = "glide" })
 hl.animation({ leaf = "fadeShadow", enabled = true, speed = 4, bezier = "glide" })
-hl.animation({ leaf = "workspaces", enabled = true, speed = 5.5, bezier = "hyperspace", style = "slidefade 20%" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 2.5, bezier = "hyperspace", style = "slidefade 20%" })
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 4, bezier = "ignite", style = "slidefadevert 30%" })
 hl.animation({ leaf = "layersIn", enabled = true, speed = 3, bezier = "glide", style = "fade" })
 hl.animation({ leaf = "layersOut", enabled = true, speed = 2, bezier = "retract", style = "fade" })
