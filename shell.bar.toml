@@ -1,0 +1,12 @@
+# Full [bar] section. shell.<section>.toml REPLACES the generated section
+# outright — it is not merged — so every key the template defines is repeated
+# here. The bar is glass: Hyprland blurs behind the omarchy-bar layer
+# (hyprland.lua), so a low alpha reads as frosted, not as missing.
+background       = "#0d0e15"
+background-alpha = 0.45
+text             = "#dcd6e6"
+# Modules calling attention to themselves (recording, voxtype, alerts, updates)
+active           = "#e5484d"
+scale-with-font  = true
+size-horizontal  = 26
+size-vertical    = 28

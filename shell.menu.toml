@@ -1,0 +1,15 @@
+# Full [menu] section. Clipboard and emoji pickers inherit these tokens.
+# Same glass treatment as [launcher]: faint unblurred scrim, frosted card.
+background                = "#0d0e15"
+background-alpha          = 0.68
+text                      = "#dcd6e6"
+border                    = "hyprland.active-border-foreground"
+border-alpha              = 1.0
+scrim                     = "#050609"
+scrim-alpha               = 0.1
+# The selected row is lit in the accent.
+selected-background       = "#7fa6d8"
+selected-background-alpha = 0.2
+selected-text             = "#ffffff"
+selected-border           = "hyprland.active-border-foreground"
+selected-border-alpha     = 0.35

@@ -1,0 +1,54 @@
+# Star Wars — Alacritty. Hand-written so the window can carry alpha; see
+# foot.ini. Hyprland does the blurring.
+[window]
+opacity = 0.72
+# Ask the compositor for blur explicitly; see the note in foot.ini.
+blur = true
+
+[colors.primary]
+background = "#0d0e15"
+foreground = "#dcd6e6"
+
+[colors.cursor]
+text = "#0d0e15"
+cursor = "#ffffff"
+
+[colors.vi_mode_cursor]
+text = "#0d0e15"
+cursor = "#ffffff"
+
+[colors.search.matches]
+foreground = "#0d0e15"
+background = "#f0c05a"
+
+[colors.search.focused_match]
+foreground = "#0d0e15"
+background = "#e5484d"
+
+[colors.footer_bar]
+foreground = "#0d0e15"
+background = "#dcd6e6"
+
+[colors.selection]
+text = "#ffffff"
+background = "#26354f"
+
+[colors.normal]
+black = "#0d0e15"
+red = "#e5484d"
+green = "#3ddc97"
+yellow = "#f0c05a"
+blue = "#4d9bff"
+magenta = "#9b5cff"
+cyan = "#4fd1e8"
+white = "#dcd6e6"
+
+[colors.bright]
+black = "#5e5a74"
+red = "#ff6b72"
+green = "#74efb8"
+yellow = "#ffd98a"
+blue = "#7fb8ff"
+magenta = "#b98cff"
+cyan = "#84e4f3"
+white = "#ffffff"
