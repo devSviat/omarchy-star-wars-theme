@@ -1,5 +1,9 @@
 -- Star Wars — Hyprland side of the theme.
 --
+-- Named .example because omarchy-theme-set drops every *.lua from a theme
+-- cloned by `omarchy theme install`; tools/install-themes.sh links this file
+-- in as hyprland.lua.
+--
 -- Hand-written instead of generated from default/themed/hyprland.lua.tpl:
 -- the template only emits border colours, and this theme's whole point is the
 -- glass — blur, window translucency, blurred shell surfaces. A template never
@@ -167,7 +171,8 @@ hl.layer_rule({
 })
 
 -- Two themes live in this one directory: `star-wars` and `star-wars-glass` are
--- both symlinks to it, so every file is shared and they can never drift. The
+-- both directories of links into it, so every file is shared and they can
+-- never drift. The
 -- only difference is hyprglass, switched on the active theme's name, which
 -- omarchy-theme-set writes before its final `hyprctl reload`.
 local function current_theme_name()

@@ -1,0 +1,7 @@
+# Full [popups] section — every bar flyout (dropdowns, OSD, popup cards).
+# Translucent over the blur; the steel-blue border carries the edge.
+background       = "#0d0e15"
+background-alpha = 0.78
+text             = "#dcd6e6"
+border           = "hyprland.active-border"
+border-alpha     = 0.85
