@@ -8,15 +8,16 @@
 #   preview-glass.png  Star Wars Glass  — the same scene with hyprglass (saber)
 #
 # Each theme is applied for real in turn, and the same two floating windows —
-# fastfetch and a theme file in Neovim — are opened over the Sith wallpaper so
-# that one blade crosses each window's edge. That is where the looks differ
+# Files on the theme's wallpapers and a theme file in Neovim — are opened over
+# the Sith wallpaper so that one blade crosses each window's edge. That is where the looks differ
 # most: hyprglass bends and fringes the blade at the glass edge, Hyprland's
 # blur just softens it, and the cloned theme has opaque windows. The figure
 # stays clear between them.
 #
 # Needs: both themes installed by install-themes.sh, a monitor showing an
-# empty workspace (8 by default, PREVIEW_WORKSPACE to change), and hyprglass
-# loaded for the glass shot. The theme that was active before is put back at
+# empty workspace (8 by default, PREVIEW_WORKSPACE to change), Files not
+# running (it is single-instance, and a window opened into a running one
+# ignores the placement rule), and hyprglass loaded for the glass shot. The theme that was active before is put back at
 # the end, the install is rebuilt, and the windows are always closed, even if
 # a step fails.
 set -euo pipefail
@@ -39,7 +40,13 @@ WS=${PREVIEW_WORKSPACE:-8}
 TAG=sw-preview
 PIN_BG=00-sith-star-wars-lightsaber-dark-background-3840x2160-5554.jpg
 
+pgrep -x nautilus >/dev/null && {
+  echo "close Files first" >&2
+  exit 1
+}
+
 TMP=$(mktemp -d)
+ORIGINAL_ZOOM=$(gsettings get org.gnome.nautilus.icon-view default-zoom-level)
 ORIGINAL_THEME=$(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null || true)
 
 preview_pids() {
@@ -54,11 +61,13 @@ close_windows() {
   local pids
   pids=$(preview_pids)
   [[ -z $pids ]] || kill $pids 2>/dev/null || true
+  nautilus -q 2>/dev/null || true
   sleep 1
 }
 
 cleanup() {
   close_windows
+  gsettings set org.gnome.nautilus.icon-view default-zoom-level "$ORIGINAL_ZOOM" || true
   local now
   now=$(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null || true)
   if [[ -n $ORIGINAL_THEME && $now != "$ORIGINAL_THEME" ]]; then
@@ -90,10 +99,10 @@ fi
 # Window geometry in the monitor's logical space, as fractions of its size, so
 # the blades land on the edges whatever the screen: both windows sit low (40%
 # to 86% of the height), so the head and shoulders stay clear above them and
-# each blade crosses the bottom edge of the window on its side. They are wide
-# enough (43%) for fastfetch to lay out and print the theme's name in full.
+# each blade crosses the bottom edge of the window on its side.
 # The scene was composed on a 2048-wide logical screen at foot's 9 pt. The
-# font scales with the screen, so fastfetch lays out the same on a smaller one.
+# font scales with the screen, so the editor shows the same text on a smaller
+# one.
 read -r LW LH LX LY RW RH RX RY FONT_SIZE PX PY < <(python3 -c "
 w = $MW / $SCALE; h = $MH / $SCALE
 print(int(w*0.43), int(h*0.46), int(w*0.02), int(h*0.40),
@@ -106,11 +115,11 @@ park_pointer() {
   hyprctl dispatch "hl.dsp.cursor.move({ x = $PX, y = $PY })" >/dev/null 2>&1 || true
 }
 
+# `move` in a window rule is relative to the monitor the window opens on.
 open_window() {
   local w=$1 h=$2 x=$3 y=$4
   shift 4
-  # `move` in a window rule is relative to the monitor the window opens on.
-  hyprctl dispatch "hl.dsp.exec_cmd(\"[workspace $WS silent; float; size $w $h; move $x $y] uwsm-app -- foot -T $TAG -f monospace:size=$FONT_SIZE -e $*\")" >/dev/null
+  hyprctl dispatch "hl.dsp.exec_cmd(\"[workspace $WS silent; float; size $w $h; move $x $y] $*\")" >/dev/null
   sleep 0.8
 }
 
@@ -134,12 +143,10 @@ shoot() {
   omarchy-theme-bg-set "$HOME/.local/state/omarchy/current/theme/backgrounds/$PIN_BG" >/dev/null 2>&1 || true
   sleep 5
   # -n -R: no swap file and read-only, so killing it leaves nothing behind.
-  open_window "$RW" "$RH" "$RX" "$RY" "nvim -n -R $THEMES/$theme/$file"
-  # fastfetch opens last and so holds the focus, with echo off: keys typed
-  # during the run then leave no mark in either window.
-  open_window "$LW" "$LH" "$LX" "$LY" "sh -c 'fastfetch; stty -echo; sleep 120'"
-  # Long enough for lua_ls to finish loading; its progress line sits in the
-  # status bar until then.
+  open_window "$RW" "$RH" "$RX" "$RY" "uwsm-app -- foot -T $TAG -f monospace:size=$FONT_SIZE -e nvim -n -R $THEMES/$theme/$file"
+  open_window "$LW" "$LH" "$LX" "$LY" "nautilus --new-window $THEMES/$theme/backgrounds"
+  # Long enough for lua_ls to finish loading (its progress line sits in the
+  # status bar until then) and for Files to draw its thumbnails.
   sleep 9
   hyprctl clients -j | python3 -c "
 import json, sys
@@ -167,6 +174,10 @@ for c in json.load(sys.stdin):
     -strip -define png:compression-level=9 "$out"
   echo "$theme -> $out"
 }
+
+# Four wallpapers to a row: big enough to read as pictures, small enough for
+# three rows.
+gsettings set org.gnome.nautilus.icon-view default-zoom-level small-plus
 
 shoot star-wars preview-full.png hyprland.lua
 

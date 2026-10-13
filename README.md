@@ -144,8 +144,8 @@ the hyprglass plugin, built in step 4.
      empty workspace and run `PREVIEW_WORKSPACE=<n> ./tools/capture-previews.sh`.
      It applies each look in turn — the gallery install included, staged
      the way Omarchy would stage a clone — screenshots it (with `grim`,
-     `foot`, `fastfetch` and `nvim`, all shipped with Omarchy) and puts your
-     theme back.
+     `foot`, `nvim` and Files, all shipped with Omarchy; close Files first)
+     and puts your theme back.
 
 ### Update
 

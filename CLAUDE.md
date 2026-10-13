@@ -50,11 +50,12 @@ Rules for keeping them in parallel:
 
 Thumbnails: `preview.png` (the gallery install, see below), `preview-full.png`
 (Star Wars) and `preview-glass.png` (Star Wars Glass) are real screenshots
-from `./tools/capture-previews.sh`: it applies each look for real (fastfetch prints the theme name, so a shot taken under
-the wrong theme is visibly wrong) and floats two windows so the Sith
+from `./tools/capture-previews.sh`: it applies each look for real and floats two windows (Files on the
+wallpapers, a theme file in Neovim — its status line names the theme
+directory, so a shot taken under the wrong theme is visibly wrong) so the Sith
 wallpaper's blades cross their edges — where hyprglass visibly bends the
 light and plain blur does not. It needs an empty visible workspace
-(`PREVIEW_WORKSPACE`) and puts the original theme back. Commit before
+(`PREVIEW_WORKSPACE`) with Files closed, and puts the original theme back. Commit before
 shooting: Neovim's git signs mark uncommitted lines in the right-hand window.
 
 ## Two installs: the gallery clone and `tools/install-themes.sh`
