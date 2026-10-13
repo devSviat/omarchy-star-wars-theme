@@ -41,7 +41,7 @@ bright_foreground = "#ffffff"
 # keep only the smoke's mid tone (#26354f, 50%), a soft navy edge that sits in
 # the same glass as the bar and the windows. The shell's [hyprland] tokens
 # take this too, so menus, panels and notifications wear the same rim. Kept in
-# step by hand with hyprland.lua, which is written out rather than generated.
+# step by hand with hyprland.lua.example, which is written out rather than generated.
 hyprland_active_border   = "rgba(cfe0f766) rgba(7fa6d82e) 90deg"
 hyprland_inactive_border = "rgba(26354f80)"
 

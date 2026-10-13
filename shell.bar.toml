@@ -1,7 +1,8 @@
 # Full [bar] section. shell.<section>.toml REPLACES the generated section
 # outright — it is not merged — so every key the template defines is repeated
 # here. The bar is glass: Hyprland blurs behind the omarchy-bar layer
-# (hyprland.lua).
+# (hyprland.lua.example). A cloned install has no blur and shows the tint
+# alone, which holds up because only wallpaper is ever under the bar.
 #
 # Tint and alpha are tuned against what the windows actually render as, not
 # against `background`. The strip behind the bar is the darkest part of every

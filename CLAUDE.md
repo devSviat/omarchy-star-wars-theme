@@ -8,8 +8,8 @@ and shell surfaces over a Hyprland blur. Local only; no remote.
 **The wallpapers are committed.** The repo is public, and the wallpapers are
 third-party Star Wars art: the user first published without them (history
 rewritten to purge images, a downloader script), then chose to ship them after
-all. `backgrounds/`, `unlock.png`, `preview-unlock.png`, `preview.png` and
-`preview-glass.png` are in git; README credits the authors and says the MIT
+all. `backgrounds/`, `unlock.png`, `preview-unlock.png`, `preview.png`,
+`preview-full.png` and `preview-glass.png` are in git; README credits the authors and says the MIT
 license does not cover them. Keep that credit and notice accurate when the
 set of wallpapers changes.
 
@@ -21,9 +21,9 @@ and is not duplicated here.
 
 This directory is **two** Omarchy themes: `star-wars` (**Star Wars**, no
 hyprglass) and `star-wars-glass` (**Star Wars Glass**, with hyprglass).
-`./tools/install-themes.sh` installs both: `star-wars` is a symlink to this
-repo; `star-wars-glass` is a real directory of **absolute** symlinks into it,
-with `preview.png -> preview-glass.png` so the switcher shows its own
+`./tools/install-themes.sh` installs both, each as a real directory of
+**absolute** symlinks into this repo, with `preview.png` linked to
+`preview-full.png` / `preview-glass.png` so the switcher shows each one's own
 thumbnail (it only reads `preview.png` at a theme's root). Absolute because
 `omarchy-theme-set` stages with `cp -r`, which copies links verbatim; never
 link `.git` in, or the theme is treated as repo-installed and loses its Lua.
@@ -33,7 +33,7 @@ Rules for keeping them in parallel:
 - **Never split the files into two copies.** Every change goes into this one
   directory and lands in both themes. After adding a top-level file, rerun
   `./tools/install-themes.sh` so Star Wars Glass links it too.
-- **The only difference is hyprglass**, chosen in `hyprland.lua` by reading
+- **The only difference is hyprglass**, chosen in `hyprland.lua.example` by reading
   `~/.local/state/omarchy/current/theme.name`. `omarchy-theme-set` writes that
   file right after swapping the theme in and before its final `hyprctl reload`
   (`omarchy-restart-hyprctl`), so the name is always current.
@@ -48,41 +48,51 @@ Rules for keeping them in parallel:
   since the shared `backgrounds/` paths would otherwise make a switch advance
   the rotation.
 
-Thumbnails: `preview.png` (Star Wars) and `preview-glass.png` (Star Wars
-Glass) are real screenshots from `./tools/capture-previews.sh`: it applies
-each theme for real (fastfetch prints the theme name, so a shot taken under
-the wrong theme is visibly wrong) and floats two windows so the Sith
+Thumbnails: `preview.png` (the gallery install, see below), `preview-full.png`
+(Star Wars) and `preview-glass.png` (Star Wars Glass) are real screenshots
+from `./tools/capture-previews.sh`: it applies each look for real and floats two windows (Files on the
+wallpapers, a theme file in Neovim — its status line names the theme
+directory, so a shot taken under the wrong theme is visibly wrong) so the Sith
 wallpaper's blades cross their edges — where hyprglass visibly bends the
 light and plain blur does not. It needs an empty visible workspace
-(`PREVIEW_WORKSPACE`) and puts the original theme back.
+(`PREVIEW_WORKSPACE`) with Files closed, and puts the original theme back. Commit before
+shooting: Neovim's git signs mark uncommitted lines in the right-hand window.
 
-## Installed by `tools/install-themes.sh`, deliberately
+## Two installs: the gallery clone and `tools/install-themes.sh`
 
-```bash
-./tools/install-themes.sh
-```
+The theme is listed in the Omarchy gallery (omacom/omarchy-site), which
+installs with `omarchy theme install <url>`. `omarchy-theme-set` treats a
+theme directory containing `.git` as untrusted and strips every `*.lua`, the
+four terminal configs and `vscode.json`, then generates its own from
+`colors.toml`. The gallery's audit bot rejects a repo that ships those names,
+so they live here as `.example`:
 
-It makes `~/.config/omarchy/themes/star-wars` a symlink to this repo and
-`~/.config/omarchy/themes/star-wars-glass` a directory of absolute symlinks
-into it (see "Two themes" below). `omarchy-theme-set` treats a theme directory
-containing `.git` as untrusted and strips every `*.lua`, the four terminal
-configs and `vscode.json`; neither install shape trips that check, so both
-stage in full. Never `omarchy theme install` this theme — it would drop
-`hyprland.lua` (all of the blur and the glass switch) and the terminal configs
-(all of the terminal transparency). The user-facing install guide is the
-Install section of README.md; keep it in step with this script.
+- `hyprland.lua.example`, `foot.ini.example`, `ghostty.conf.example`,
+  `alacritty.toml.example`, `kitty.conf.example` — the glass itself.
+- `shell.{menu,launcher,notifications,popups}.toml.example` — the translucent
+  cards. Each has a plain twin at 0.94 for the gallery install, where nothing
+  blurs behind the card and the window underneath ran through the menu text.
+  **The twins differ only in `background-alpha` and the header comment**;
+  change a colour in one and change it in the other.
+
+`./tools/install-themes.sh` links every `<name>.example` in as `<name>` (the
+plain twin is then skipped), so this machine runs the full theme. Neither
+installed directory holds `.git`, so both stage in full. A gallery user gets
+palette, wallpapers, bar and near-opaque cards — no blur, no animations,
+opaque terminals. The user-facing account is "Two ways to install" in
+README.md; keep it in step with this script.
 
 ## Where the transparency lives
 
 | Layer | File | Value |
 |---|---|---|
-| Animations (curves ignite / retract / glide / hyperspace) | `hyprland.lua` | workspaces slide + fade, 250 ms. Bar panels are NOT animated here: `omarchy-keyboard-panel` is full-screen, and Hyprland's layer `slide` always starts fully off-screen while `popin` scales about the screen centre (LayerSurfaceAnimationController.cpp), so a short drop from the bar can only live in the shell's QML |
-| Blur, shadow, rounding, border | `hyprland.lua` | blur size 9 x 3 passes, brightness 0.75 |
-| Window opacity (non-terminal) | `hyprland.lua` | `default-opacity` tag -> `0.9 0.82` |
-| Terminal window opacity | `hyprland.lua` | `terminal` tag -> `1.0 0.94` |
-| Terminal background | `foot.ini`, `ghostty.conf`, `alacritty.toml`, `kitty.conf` | alpha 0.72 |
-| Shell bar / menus / notifications | `shell.*.toml` | `background-alpha` 0.45 – 0.9 |
-| Blur behind shell layers | `hyprland.lua` | `hl.layer_rule`: bar `ignore_alpha 0.15`, full-screen layers `0.55` so only the card blurs, never the scrim |
+| Animations (curves ignite / retract / glide / hyperspace) | `hyprland.lua.example` | workspaces slide + fade, 250 ms. Bar panels are NOT animated here: `omarchy-keyboard-panel` is full-screen, and Hyprland's layer `slide` always starts fully off-screen while `popin` scales about the screen centre (LayerSurfaceAnimationController.cpp), so a short drop from the bar can only live in the shell's QML |
+| Blur, shadow, rounding, border | `hyprland.lua.example` | blur size 9 x 3 passes, brightness 0.75 |
+| Window opacity (non-terminal) | `hyprland.lua.example` | `default-opacity` tag -> `0.9 0.82` |
+| Terminal window opacity | `hyprland.lua.example` | `terminal` tag -> `1.0 0.94` |
+| Terminal background | `foot.ini.example`, `ghostty.conf.example`, `alacritty.toml.example`, `kitty.conf.example` | alpha 0.72 |
+| Shell bar / menus / notifications | `shell.*.toml`, `shell.*.toml.example` | `background-alpha` 0.55 – 0.9 in the full install |
+| Blur behind shell layers | `hyprland.lua.example` | `hl.layer_rule`: bar `ignore_alpha 0.15`, full-screen layers `0.55` so only the card blurs, never the scrim |
 | GTK / libadwaita apps | `gtk.css` | rgba surfaces |
 
 Browsers, video players, games, PiP and screen-share targets drop the
@@ -114,7 +124,7 @@ When measuring the bar against a window, wait a few seconds after
 
 ## hyprglass
 
-`hyprland.lua` ends with an `if hl.plugin and hl.plugin.hyprglass` block — inert
+`hyprland.lua.example` ends with an `if hl.plugin and hl.plugin.hyprglass` block — inert
 unless the plugin is loaded. The prebuilt `hyprglass.so` release links
 `libaquamarine.so.13`, this machine has `.so.14`, so it is built locally in
 `~/.local/share/hyprglass/src` (plain `make`, no hyprpm — hyprpm needs sudo and
@@ -158,7 +168,7 @@ DevSviat's.
    value and draws a black window. Same rule kept in `shell.*.toml`.
 2. **`shell.<section>.toml` replaces a section, it does not merge.** Every
    file carries the complete section.
-3. **`hyprland.lua` and the terminal configs are hand-written**, so their
+3. **`hyprland.lua.example` and the terminal configs are hand-written**, so their
    colours are not generated. Keep the border values in step with
    `hyprland_active_border` / `hyprland_inactive_border`, and the terminal
    palettes with `colors.toml`.
@@ -166,6 +176,7 @@ DevSviat's.
 ## After changing anything
 
 ```bash
+./tools/install-themes.sh              # after adding or renaming a top-level file
 omarchy theme set star-wars            # stderr must be empty: nothing dropped
 hyprctl configerrors                   # must be empty
 grep -r '{{' ~/.local/state/omarchy/current/theme/ \

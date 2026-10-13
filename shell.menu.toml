@@ -1,13 +1,15 @@
 # Full [menu] section. Clipboard and emoji pickers inherit these tokens.
-# Same glass treatment as [launcher]: faint unblurred scrim, frosted card.
+# Near-opaque: this copy is the one `omarchy theme install` stages, and there
+# nothing blurs behind the card (Omarchy drops a cloned theme's hyprland.lua),
+# so a see-through card lets the window underneath run through the menu text.
+# tools/install-themes.sh links shell.menu.toml.example, the glass card, instead.
 background                = "#0d0e15"
-background-alpha          = 0.68
+background-alpha          = 0.94
 text                      = "#dcd6e6"
 border                    = "hyprland.active-border-foreground"
 border-alpha              = 0.85
 scrim                     = "#050609"
 scrim-alpha               = 0.1
-# The selected row is lit in the accent.
 selected-background       = "#7fa6d8"
 selected-background-alpha = 0.2
 selected-text             = "#ffffff"

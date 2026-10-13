@@ -1,7 +1,8 @@
 # Full [notifications] section — see shell.bar.toml about section
-# replacement. Glass card over the blurred desktop.
+# replacement. Near-opaque for the same reason as shell.menu.toml;
+# shell.notifications.toml.example is the glass card.
 background       = "#0d0e15"
-background-alpha = 0.72
+background-alpha = 0.94
 text             = "#dcd6e6"
 border           = "hyprland.active-border"
 border-alpha     = 0.85
