@@ -27,6 +27,10 @@ hyprglass) and `star-wars-glass` (**Star Wars Glass**, with hyprglass).
 thumbnail (it only reads `preview.png` at a theme's root). Absolute because
 `omarchy-theme-set` stages with `cp -r`, which copies links verbatim; never
 link `.git` in, or the theme is treated as repo-installed and loses its Lua.
+`unlock.png` is the one file copied rather than linked: since Omarchy 4.0.5
+`omarchy-plymouth-set` rejects a symlinked logo ("Logo file is a symlink, which
+is not accepted"). Rerun the script after regenerating it, or "Set unlock"
+picks up the stale copy.
 
 Rules for keeping them in parallel:
 

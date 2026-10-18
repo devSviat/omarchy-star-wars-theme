@@ -27,7 +27,11 @@
 # `.git` must never be linked in: omarchy-theme-set treats a theme directory
 # holding `.git` as installed from a repo and strips every *.lua from it.
 #
-# Rerun after adding or renaming a top-level file in the repo.
+# unlock.png is copied, not linked: omarchy-plymouth-set refuses a symlinked
+# logo, so "Set unlock" fails on a link.
+#
+# Rerun after adding or renaming a top-level file in the repo, or after
+# changing unlock.png.
 set -euo pipefail
 shopt -s nullglob dotglob
 
@@ -65,6 +69,7 @@ build_theme() {
     name=${entry##*/}
     case $name in
       .git | .gitignore | .impeccable | CLAUDE.md | preview.png | preview-full.png | preview-glass.png) continue ;;
+      unlock.png) cp "$entry" "$dir/$name" ;;
       *.example) ln -s "$entry" "$dir/${name%.example}" ;;
       *) [[ -e $entry.example ]] || ln -s "$entry" "$dir/$name" ;;
     esac
