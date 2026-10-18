@@ -105,7 +105,8 @@ the hyprglass plugin, built in step 4.
 
    This creates `~/.config/omarchy/themes/star-wars` and
    `~/.config/omarchy/themes/star-wars-glass`, each a directory of absolute
-   symlinks into the repo with its own `preview.png`. Both then show up in
+   symlinks into the repo with its own `preview.png` — all but `unlock.png`,
+   which is copied because Omarchy refuses a symlinked unlock logo. Both then show up in
    Omarchy Menu → Style → Theme as **Star Wars** and **Star Wars Glass**.
 
 3. **Apply one** — from Omarchy Menu → Style → Theme, or:
@@ -152,7 +153,7 @@ the hyprglass plugin, built in step 4.
 ```bash
 cd ~/Projects/omarchy-star-wars-theme
 git pull
-./tools/install-themes.sh        # picks up any new or renamed top-level file
+./tools/install-themes.sh        # picks up new or renamed files and a changed unlock.png
 omarchy theme set star-wars-glass   # or star-wars — re-apply to stage the changes
 ```
 
@@ -166,7 +167,7 @@ snippet below sends a notification when that happens.
 Switch to another theme first, then:
 
 ```bash
-rm -r ~/.config/omarchy/themes/star-wars ~/.config/omarchy/themes/star-wars-glass   # only links, the repo is untouched
+rm -r ~/.config/omarchy/themes/star-wars ~/.config/omarchy/themes/star-wars-glass   # links and unlock.png copies, the repo is untouched
 ```
 
 If you set up the extras, also remove the hyprglass block from
