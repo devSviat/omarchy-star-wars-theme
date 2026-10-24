@@ -17,6 +17,11 @@ Derived from `~/Projects/omarchy-devsviat-theme` (slug `dev-sviat`); that
 repo's `docs/RESEARCH.md` is the full account of how Omarchy 4 theming works
 and is not duplicated here.
 
+`tools/` is local only and gitignored: the gallery's audit bot rejects a theme
+repo that carries any script, wherever it sits. Never commit it; the
+user-facing full install is the shell lines in README.md's Install, keep them
+in step with the local install script.
+
 ## Two themes, maintained in parallel
 
 This directory is **two** Omarchy themes: `star-wars` (**Star Wars**, no
