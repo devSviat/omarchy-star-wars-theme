@@ -168,7 +168,7 @@ hl.layer_rule({ match = { namespace = "^omarchy-bar$" }, blur = true, blur_popup
 -- than the whole screen going to a dark blur whenever a menu opens.
 hl.layer_rule({
   match = {
-    namespace = "^(omarchy-menu|omarchy-notifications|omarchy-osd|omarchy-polkit|omarchy-clipboard|omarchy-emojis|omarchy-keyboard-panel|omarchy-reminders|omarchy-network-qr|omarchy-image-selector)$",
+    namespace = "^(omarchy-menu|omarchy-dock-apps|omarchy-notifications|omarchy-osd|omarchy-polkit|omarchy-clipboard|omarchy-emojis|omarchy-keyboard-panel|omarchy-reminders|omarchy-network-qr|omarchy-image-selector)$",
   },
   blur = true,
   blur_popups = true,
@@ -242,6 +242,7 @@ if hl.plugin and hl.plugin.hyprglass then
     -- Full-screen scrim + card layers take the same 0.55 alpha gate as the blur
     -- rule above, so only the card refracts and the scrim stays a plain wash.
     hg.layer("omarchy-menu", { preset = "saber", mask_threshold = 0.55 })
+    hg.layer("omarchy-dock-apps", { preset = "saber", mask_threshold = 0.55 })
     hg.layer("omarchy-keyboard-panel", { preset = "saber", mask_threshold = 0.55 })
   end
 end
