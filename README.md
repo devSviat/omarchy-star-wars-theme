@@ -25,6 +25,7 @@ animations and the Star Wars Glass variant (details in [Install](#install)):
 
 ```bash
 git clone https://github.com/devSviat/omarchy-star-wars-theme.git ~/Projects/omarchy-star-wars-theme
+git clone https://github.com/devSviat/omarchy-theme-extras.git ~/Projects/omarchy-theme-extras
 cd ~/Projects/omarchy-star-wars-theme
 ```
 
@@ -47,13 +48,15 @@ you.
 A theme cloned by `omarchy theme install` is treated as untrusted: Omarchy
 drops every `*.lua` and the terminal configs from it and generates its own
 from `colors.toml`. Those are exactly the files that carry the blur, the
-animations, the glass switch and the terminal transparency, so they are kept
-here under a `.example` suffix — `hyprland.lua.example`, `foot.ini.example`
-and so on — which Omarchy stages but never loads.
+animations, the glass switch and the terminal transparency. The terminal
+configs are kept here under a `.example` suffix — `foot.ini.example` and so
+on — which Omarchy stages but never loads. `hyprland.lua` lives in a separate
+repository, [omarchy-theme-extras](https://github.com/devSviat/omarchy-theme-extras), because the Omarchy theme gallery
+does not list a theme repository that ships Lua.
 
 The full install builds each theme as a directory of symlinks into your
-checkout and links every `<name>.example` in as `<name>`. That directory holds
-no `.git`, so Omarchy stages it in full. The four `shell.*.toml.example` files
+checkout, links every `<name>.example` in as `<name>` and links `hyprland.lua`
+in from omarchy-theme-extras. That directory holds no `.git`, so Omarchy stages it in full. The four `shell.*.toml.example` files
 are the translucent menu, launcher, notification and popup cards; without a
 blur behind them the window underneath shows through the text, so the plain
 `shell.*.toml` files the gallery install uses are near-opaque instead.
@@ -75,7 +78,7 @@ parallel:
 Every file — palette, borders, bar, terminals, wallpapers — comes from this
 one directory, so the two cannot drift: `star-wars` and `star-wars-glass` are
 both directories of absolute symlinks into it. The glass itself is decided at
-load time in `hyprland.lua.example`, from the active theme's name in
+load time in `hyprland.lua` (in omarchy-theme-extras), from the active theme's name in
 `~/.local/state/omarchy/current/theme.name`. Change something once and both
 themes have it.
 
@@ -90,18 +93,20 @@ The full theme. Needs Omarchy 4 (Hyprland with the Lua config and the Quickshell
 on Omarchy 4.0.3 with Hyprland 0.56.2. Star Wars Glass additionally needs
 the hyprglass plugin, built in step 4.
 
-1. **Get the repo** somewhere permanent — both themes point into it, so don't
-   move or delete it afterwards:
+1. **Get the repos** somewhere permanent — both themes point into them, so
+   don't move or delete them afterwards. The theme's `hyprland.lua` lives in a
+   repository of its own, [omarchy-theme-extras](https://github.com/devSviat/omarchy-theme-extras):
 
    ```bash
    git clone https://github.com/devSviat/omarchy-star-wars-theme.git ~/Projects/omarchy-star-wars-theme
+   git clone https://github.com/devSviat/omarchy-theme-extras.git ~/Projects/omarchy-theme-extras
    cd ~/Projects/omarchy-star-wars-theme
    ```
 
 2. **Install both themes:**
 
    ```bash
-   repo=$PWD
+   repo=$PWD extras=$HOME/Projects/omarchy-theme-extras
    for theme in star-wars star-wars-glass; do
      dir=$HOME/.config/omarchy/themes/$theme
      mkdir "$dir" || break
@@ -118,6 +123,7 @@ the hyprglass plugin, built in step 4.
        star-wars) ln -s "$repo/preview-full.png" "$dir/preview.png" ;;
        star-wars-glass) ln -s "$repo/preview-glass.png" "$dir/preview.png" ;;
      esac
+     ln -s "$extras/star-wars/hyprland.lua" "$dir/hyprland.lua"
    done
    ```
 
@@ -125,7 +131,8 @@ the hyprglass plugin, built in step 4.
    `~/.config/omarchy/themes/star-wars-glass`, each a directory of absolute
    symlinks into the repo with its own `preview.png` — all but `unlock.png`,
    which is copied because Omarchy refuses a symlinked unlock logo. Every
-   `<name>.example` is linked in as `<name>`. The links are absolute because
+   `<name>.example` is linked in as `<name>`, and `hyprland.lua` comes from
+   omarchy-theme-extras. The links are absolute because
    Omarchy stages a theme with `cp -r`, and `.git` is left out because Omarchy
    strips every `*.lua` from a theme that holds one. Both then show up in
    Omarchy Menu → Style → Theme as **Star Wars** and **Star Wars Glass**.
@@ -165,12 +172,12 @@ the hyprglass plugin, built in step 4.
 ### Update
 
 ```bash
-cd ~/Projects/omarchy-star-wars-theme
-git pull
+git -C ~/Projects/omarchy-star-wars-theme pull
+git -C ~/Projects/omarchy-theme-extras pull
 omarchy theme set star-wars-glass   # or star-wars — re-apply to stage the changes
 ```
 
-The themes are links into the checkout, so a pull is enough for changed
+The themes are links into the checkouts, so a pull is enough for changed
 files. If the pull adds or renames a top-level file or changes `unlock.png`,
 first remove both theme directories (see [Uninstall](#uninstall)) and repeat
 step 2 of [Install](#install).
@@ -190,7 +197,8 @@ rm -r ~/.config/omarchy/themes/star-wars ~/.config/omarchy/themes/star-wars-glas
 
 If you set up the extras, also remove the hyprglass block from
 `~/.config/hypr/autostart.lua`, `~/.local/share/hyprglass/`, and the
-`~/.config/gtk-4.0/gtk.css` link. Then delete the repo itself.
+`~/.config/gtk-4.0/gtk.css` link. Then delete the repo itself, and
+`~/Projects/omarchy-theme-extras` unless another theme still links into it.
 
 ## Palette
 
@@ -211,13 +219,13 @@ If you set up the extras, also remove the hyprglass block from
 ## Glass
 
 The full install. A file listed with `.example` is linked in without the
-suffix.
+suffix; `hyprland.lua` is the one in omarchy-theme-extras.
 
 | What | Where | Setting |
 |---|---|---|
-| Blur | `hyprland.lua.example` | size 9, 3 passes, brightness 0.75, vibrancy 0.25 |
-| Glass edge | `hyprland.lua.example` | rim border, superellipse corners (`rounding_power 3`), shadow offset 5 px down |
-| App windows | `hyprland.lua.example` | opacity 0.90 active / 0.82 inactive |
+| Blur | `hyprland.lua` | size 9, 3 passes, brightness 0.75, vibrancy 0.25 |
+| Glass edge | `hyprland.lua` | rim border, superellipse corners (`rounding_power 3`), shadow offset 5 px down |
+| App windows | `hyprland.lua` | opacity 0.90 active / 0.82 inactive |
 | Terminals | `foot.ini.example`, `ghostty.conf.example`, `alacritty.toml.example`, `kitty.conf.example` | background alpha 0.72 + blur requested, window 1.0 / 0.94 |
 | Bar | `shell.bar.toml` | `background` at 0.7 — the windows' hue, a step deeper; needs the bar's transparent mode off |
 | Menu / launcher | `shell.menu.toml.example`, `shell.launcher.toml.example` | card 0.68 / 0.62, scrim 0.1 (unblurred), selected row in the accent |
@@ -291,7 +299,7 @@ orrery artwork (`star-wars-ahsoka-3840x2160-12833.jpg` on
 
 ## Liquid glass (optional hyprglass)
 
-`hyprland.lua.example` carries a configuration block for the
+The theme's `hyprland.lua` carries a configuration block for the
 [hyprglass](https://github.com/hyprnux/hyprglass) compositor plugin — edge
 refraction, chromatic aberration and a specular sheen on windows, the bar, the
 Omarchy menu and the bar panels. The block only runs when the plugin is
@@ -360,7 +368,7 @@ unload: `hyprctl plugin unload ~/.local/share/hyprglass/src/hyprglass.so`.
 
 ## Animations
 
-In the full install, `hyprland.lua.example` replaces Omarchy's animation set
+In the full install, `hyprland.lua` replaces Omarchy's animation set
 with four curves:
 
 | Curve | Feel | Used by |
@@ -387,14 +395,15 @@ Omarchy's own templates. Icons are `Yaru-blue-dark`.
 
 - `omarchy theme install` runs nothing from this repo: Omarchy never loads a
   `.example` file, and the rest is colours, images and documentation.
-- The full install links `hyprland.lua.example` in as `hyprland.lua`, which
-  is Lua that Hyprland executes at every config load — that is how Omarchy
+- The full install links in `hyprland.lua` from
+  [omarchy-theme-extras](https://github.com/devSviat/omarchy-theme-extras),
+  which is Lua that Hyprland executes at every config load — that is how Omarchy
   themes set blur, animations and window rules, and why `omarchy theme install`
   strips `*.lua` from themes it clones. This one only sets options and rules
   and reads `~/.local/state/omarchy/current/theme.name` to pick the glass
   variant; it starts no processes. Read it before installing, as with any
   theme that ships Lua.
-- The repository ships no scripts. The full install is the shell lines in
+- This repository ships no scripts and no Lua. The full install is the shell lines in
   [Install](#install), which you read and run yourself; they only create
   links and copy `unlock.png` under `~/.config/omarchy/themes/`.
 - hyprglass is optional, third-party and runs inside the compositor — see
