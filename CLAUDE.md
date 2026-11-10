@@ -42,7 +42,7 @@ Rules for keeping them in parallel:
 - **Never split the files into two copies.** Every change goes into this one
   directory and lands in both themes. After adding a top-level file, rerun
   `./tools/install-themes.sh` so Star Wars Glass links it too.
-- **The only difference is hyprglass**, chosen in `hyprland.lua.example` by reading
+- **The only difference is hyprglass**, chosen in `hyprland.lua` (extras) by reading
   `~/.local/state/omarchy/current/theme.name`. `omarchy-theme-set` writes that
   file right after swapping the theme in and before its final `hyprctl reload`
   (`omarchy-restart-hyprctl`), so the name is always current.
@@ -76,16 +76,22 @@ four terminal configs and `vscode.json`, then generates its own from
 `colors.toml`. The gallery's audit bot rejects a repo that ships those names,
 so they live here as `.example`:
 
-- `hyprland.lua.example`, `foot.ini.example`, `ghostty.conf.example`,
-  `alacritty.toml.example`, `kitty.conf.example` — the glass itself.
+- `foot.ini.example`, `ghostty.conf.example`, `alacritty.toml.example`,
+  `kitty.conf.example` — the translucent terminals.
 - `shell.{menu,launcher,notifications,popups}.toml.example` — the translucent
   cards. Each has a plain twin at 0.94 for the gallery install, where nothing
   blurs behind the card and the window underneath ran through the menu text.
   **The twins differ only in `background-alpha` and the header comment**;
   change a colour in one and change it in the other.
 
+`hyprland.lua` — blur, animations, window rules, the glass switch — is not in
+this repo at all. Since 2026-11-05 the bot rejects any Lua in a theme repo,
+`.example` included, as code. It lives in `~/Projects/omarchy-theme-extras`
+(github.com/devSviat/omarchy-theme-extras) as `star-wars/hyprland.lua`, and the
+install links it into both themes. Never add Lua back here.
+
 `./tools/install-themes.sh` links every `<name>.example` in as `<name>` (the
-plain twin is then skipped), so this machine runs the full theme. Neither
+plain twin is then skipped) and `hyprland.lua` from omarchy-theme-extras, so this machine runs the full theme. Neither
 installed directory holds `.git`, so both stage in full. A gallery user gets
 palette, wallpapers, bar and near-opaque cards — no blur, no animations,
 opaque terminals. The user-facing account is "Two ways to install" in
@@ -95,13 +101,13 @@ README.md; keep it in step with this script.
 
 | Layer | File | Value |
 |---|---|---|
-| Animations (curves ignite / retract / glide / hyperspace) | `hyprland.lua.example` | workspaces slide + fade, 250 ms. Bar panels are NOT animated here: `omarchy-keyboard-panel` is full-screen, and Hyprland's layer `slide` always starts fully off-screen while `popin` scales about the screen centre (LayerSurfaceAnimationController.cpp), so a short drop from the bar can only live in the shell's QML |
-| Blur, shadow, rounding, border | `hyprland.lua.example` | blur size 9 x 3 passes, brightness 0.75 |
-| Window opacity (non-terminal) | `hyprland.lua.example` | `default-opacity` tag -> `0.9 0.82` |
-| Terminal window opacity | `hyprland.lua.example` | `terminal` tag -> `1.0 0.94` |
+| Animations (curves ignite / retract / glide / hyperspace) | `hyprland.lua` (extras) | workspaces slide + fade, 250 ms. Bar panels are NOT animated here: `omarchy-keyboard-panel` is full-screen, and Hyprland's layer `slide` always starts fully off-screen while `popin` scales about the screen centre (LayerSurfaceAnimationController.cpp), so a short drop from the bar can only live in the shell's QML |
+| Blur, shadow, rounding, border | `hyprland.lua` (extras) | blur size 9 x 3 passes, brightness 0.75 |
+| Window opacity (non-terminal) | `hyprland.lua` (extras) | `default-opacity` tag -> `0.9 0.82` |
+| Terminal window opacity | `hyprland.lua` (extras) | `terminal` tag -> `1.0 0.94` |
 | Terminal background | `foot.ini.example`, `ghostty.conf.example`, `alacritty.toml.example`, `kitty.conf.example` | alpha 0.72 |
 | Shell bar / menus / notifications | `shell.*.toml`, `shell.*.toml.example` | `background-alpha` 0.55 – 0.9 in the full install |
-| Blur behind shell layers | `hyprland.lua.example` | `hl.layer_rule`: bar `ignore_alpha 0.15`, full-screen layers `0.55` so only the card blurs, never the scrim |
+| Blur behind shell layers | `hyprland.lua` (extras) | `hl.layer_rule`: bar `ignore_alpha 0.15`, full-screen layers `0.55` so only the card blurs, never the scrim |
 | GTK / libadwaita apps | `gtk.css` | rgba surfaces |
 
 Browsers, video players, games, PiP and screen-share targets drop the
@@ -133,7 +139,7 @@ When measuring the bar against a window, wait a few seconds after
 
 ## hyprglass
 
-`hyprland.lua.example` ends with an `if hl.plugin and hl.plugin.hyprglass` block — inert
+`hyprland.lua` (extras) ends with an `if hl.plugin and hl.plugin.hyprglass` block — inert
 unless the plugin is loaded. The prebuilt `hyprglass.so` release links
 `libaquamarine.so.13`, this machine has `.so.14`, so it is built locally in
 `~/.local/share/hyprglass/src` (plain `make`, no hyprpm — hyprpm needs sudo and
@@ -177,7 +183,7 @@ DevSviat's.
    value and draws a black window. Same rule kept in `shell.*.toml`.
 2. **`shell.<section>.toml` replaces a section, it does not merge.** Every
    file carries the complete section.
-3. **`hyprland.lua.example` and the terminal configs are hand-written**, so their
+3. **`hyprland.lua` (extras) and the terminal configs are hand-written**, so their
    colours are not generated. Keep the border values in step with
    `hyprland_active_border` / `hyprland_inactive_border`, and the terminal
    palettes with `colors.toml`.
